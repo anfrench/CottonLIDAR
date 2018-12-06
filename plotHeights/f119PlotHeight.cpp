@@ -88,6 +88,7 @@ int main()
 		
 			cluster->open(fileName);
 			cout<<fileName<<": Open!"<<endl;
+			cluster->translateZ(0);
 			center = cluster->center;
 			
 			//passing cloud to canopy to be procesed
@@ -233,12 +234,13 @@ PlantHeights findHeight(int id, pclCluster *row )
 	return temp;
 }
 
-///working on this method... am i?
+///working on this method.
 PlantHeights findQuintileHeight(int id, pclCluster *row,int percentage )
 {
 	vector<float> heights;
 	string Id, iD,ID;
 	PlantHeights temp;
+	int numPoints =0;
 
 	for(int i=0; i<row->cloud->points.size(); i++ )
 	{
@@ -251,15 +253,16 @@ PlantHeights findQuintileHeight(int id, pclCluster *row,int percentage )
 	for(int i = percentage; i< heights.size(); i++)
 	{
 		sum += heights[i];
+		numPoints ++;
 	}
-	temp.avHeight = sum/(heights.size()-percentage);
+	temp.avHeight = sum/(numPoints);
 	
 	sum=0;
 	for(int i = percentage; i< heights.size(); i++ )
 	{
 		sum+= pow(heights[i]-temp.avHeight,2);
 	}
-	temp.stdDev= sqrt(sum/row->cloud->points.size());
+	temp.stdDev= sqrt(sum/numPoints);
 
 	id --;
 	
