@@ -20,3 +20,6 @@
 Builds/ 
 
 NewLidar/
+
+*.o
+*.O
