@@ -27,10 +27,11 @@ void GGA::decode()
 	
 	ID				=tokens[0];
 	utc 			= (int)string2Float(tokens[1]);
-	latitude 		= string2Float(tokens[2]);
+	latitude 		= string2Float(tokens[2])/100;
 	latDirection 	= tokens[3];
-	longitude 		= string2Float(tokens[4]);
+	longitude 		= string2Float(tokens[4])/100;
 	longDirection 	= tokens[5];
+	if(longDirection.find("W")!= std::string::npos){longitude *= -1;}
 	quality 		= (int) string2Float(tokens[6]);
 	SVNum 			= (int) string2Float(tokens[7]);
 	hdop 			= string2Float(tokens[8]);

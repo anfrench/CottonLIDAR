@@ -19,8 +19,8 @@ string GPS::getID(){return ID;}
 double GPS::getLat(){return latitude;}
 double GPS::getLong(){return longitude;}
 double GPS::getUTC(){return utc;}
-float GPS::getNorthing(){return northing;}
-float GPS::getEasting(){return easting;}
+double GPS::getNorthing(){return northing;}
+double GPS::getEasting(){return easting;}
 
 
 
@@ -33,8 +33,8 @@ string GPS::toString(){return "";}
 void GPS::setString(string GPS_IN)
 {
 	GPS_String = GPS_IN;
-	
 	decode();
+	latLongToUTM();
 }
 
 float GPS::string2Float(string stringIN)
@@ -47,7 +47,11 @@ float GPS::string2Float(string stringIN)
 
 void GPS::latLongToUTM()
 {
-		
+	short int zone=12;
+	double kscale=1;
+	long numpts=1;
+	
+	latlon2utm(&latitude, &longitude,zone,&easting,&northing,&kscale,numpts);	
 }
 
 

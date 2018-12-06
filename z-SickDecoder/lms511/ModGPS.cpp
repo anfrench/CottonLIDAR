@@ -3,8 +3,8 @@
 
 float ModGPS::getSpeed(){return speed;} 
 float ModGPS::getHeading(){return heading;} 
-float ModGPS::getNorthing(){return northing;}  
-float ModGPS::getEasting(){return easting;} 
+double ModGPS::getNorthing(){return northing;}  
+double ModGPS::getEasting(){return easting;} 
 int ModGPS::getUTC(){return utc;} 
 void ModGPS::setTime(double timeIN){genericTime = timeIN;}
 	

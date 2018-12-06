@@ -18,8 +18,8 @@ class ModGPS
 	public:
 	float getSpeed(); 
 	float getHeading();
-	float getNorthing(); 
-	float getEasting();
+	double getNorthing(); 
+	double getEasting();
 	int getUTC();
 	double getTime();	
 

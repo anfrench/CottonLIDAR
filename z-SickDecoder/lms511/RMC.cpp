@@ -25,11 +25,11 @@ void RMC::decode()
 	utc 			= (int)string2Float(tokens[1]);
 	active 			=(((int) string2Float(tokens[2]))) ==1 ? true : false;
 	
-	latitude 		= string2Float(tokens[3]);
+	latitude 		= string2Float(tokens[3])/100;
 	latDirection 	= tokens[4];
-	longitude 		= string2Float(tokens[5]);
+	longitude 		= string2Float(tokens[5])/100;
 	longDirection 	= tokens[6];
-	
+	if(longDirection.find("W")!=std::string::npos){longitude *= -1;}
 	speed			= string2Float(tokens[7]);
 	heading			=  string2Float(tokens[8]);
 	date 			= string2Float(tokens[9]);

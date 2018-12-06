@@ -3,6 +3,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <math.h>
+#include "LatLongToUtm.h"
 using namespace std;
 
 class GPS
@@ -13,7 +14,7 @@ class GPS
 	double latitude, longitude;
 	int utc;
 	string latDirection, longDirection, checkSum;
-	float northing, easting;
+	double northing, easting;
 	
 
 	//Defined
@@ -26,8 +27,8 @@ class GPS
 	double getLat();
 	double getLong();
 	double getUTC();
-	float getNorthing();
-	float getEasting();
+	double getNorthing();
+	double getEasting();
 
 	void latLongToUTM();
 
