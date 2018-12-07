@@ -26,3 +26,5 @@ NewLidar/
 *.O
 
 *.vscode
+
+*win
