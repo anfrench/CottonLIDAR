@@ -18,7 +18,7 @@ class PathLidar
 	private:
 	float height, xOffset, yOffset;
 	int timeCorrection;
-	Path path;
+	//Path path;
 	vector<Point> cloud;
 	string lidarFileName;
 	
