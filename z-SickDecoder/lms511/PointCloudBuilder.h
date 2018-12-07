@@ -1,5 +1,8 @@
 #include <vector>
-#include <math.h>
+//#include <math.h>
+#include <cmath>
+
+#define _USE_MATH_DEFINES
 
 class Point
 {
@@ -13,11 +16,14 @@ class PointCloudBuilder
 {
   private:
     std::vector<Point> cloud, workingRow;
-
+  const double PI  =3.141592653589793238463;
   protected:
   public:
   PointCloudBuilder();
   void addPoints(std::vector<int> distance, double angle, double stepAngle);
   void rotateRow(double heading);
   void placeRow(double northing, double easting);
+
+  double toRad(double angle, int steps);
+  double toDegree(double angle, int steps);
 };

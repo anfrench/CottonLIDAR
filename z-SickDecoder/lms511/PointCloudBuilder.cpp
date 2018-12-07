@@ -4,6 +4,8 @@ PointCloudBuilder::PointCloudBuilder(){}
 
 void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, double stepAngle)
 {
+    angle = toRad(angle, 360);
+    stepAngle = toRad(stepAngle, 360);
     for(int i=0; i<distance.size(); i++)
     {
         Point p;
@@ -19,6 +21,7 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
 
 void PointCloudBuilder::rotateRow(double heading)
 {
+    heading = toRad(heading, 360);
     for(int i=0; i<workingRow.size(); i++)
     {
         Point p = workingRow[i];
@@ -38,4 +41,14 @@ void PointCloudBuilder::placeRow(double northing, double easting)
         p.y+=northing;
         cloud.push_back(p);
     }
+}
+
+double PointCloudBuilder::toRad(double angle, int steps)
+{
+	return  PI * angle / (steps / 2 );
+}
+
+double PointCloudBuilder::toDegree(double angle, int steps)
+{
+	return (steps / 2 ) * angle / PI;
 }
