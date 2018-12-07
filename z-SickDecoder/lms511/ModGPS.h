@@ -11,22 +11,22 @@ class ModGPS
 {
 	private:
 	protected:
-	float speed, heading;
-	float northing, easting;
+	double speed, heading;
+	double northing, easting;
 	int utc;
 	double genericTime;
 	public:
-	float getSpeed(); 
-	float getHeading();
+	double getSpeed(); 
+	double getHeading();
 	double getNorthing(); 
 	double getEasting();
 	int getUTC();
 	double getTime();	
 
-	void setSpeed(float sppedIN); 
-	void setHeading(float headingIN);
-	void setNorthing(float northingIN); 
-	void setEasting(float eastingIN);
+	void setSpeed(double sppedIN); 
+	void setHeading(double headingIN);
+	void setNorthing(double northingIN); 
+	void setEasting(double eastingIN);
 	void setUTC(int utcIN);
 	void setTime(double timeIN);
 	

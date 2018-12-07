@@ -1,15 +1,15 @@
 #include "ModGPS.h"
 
 
-float ModGPS::getSpeed(){return speed;} 
-float ModGPS::getHeading(){return heading;} 
+double ModGPS::getSpeed(){return speed;} 
+double ModGPS::getHeading(){return heading;} 
 double ModGPS::getNorthing(){return northing;}  
 double ModGPS::getEasting(){return easting;} 
 int ModGPS::getUTC(){return utc;} 
 void ModGPS::setTime(double timeIN){genericTime = timeIN;}
 	
-void ModGPS::setSpeed(float speedIN){speed = speedIN;}
-void ModGPS::setHeading(float headingIN)
+void ModGPS::setSpeed(double speedIN){speed = speedIN;}
+void ModGPS::setHeading(double headingIN)
 {
 	while(headingIN < 0)
 	{
@@ -22,8 +22,8 @@ void ModGPS::setHeading(float headingIN)
 	
 	heading =headingIN;
 }
-void ModGPS::setNorthing(float northingIN){northing = northingIN;}
-void ModGPS::setEasting(float eastingIN){easting = eastingIN;}
+void ModGPS::setNorthing(double northingIN){northing = northingIN;}
+void ModGPS::setEasting(double eastingIN){easting = eastingIN;}
 void ModGPS::setUTC(int utcIN){utc=utcIN;}
 
 
