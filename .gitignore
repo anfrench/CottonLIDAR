@@ -23,3 +23,5 @@ NewLidar/
 
 *.o
 *.O
+
+*.vscode
