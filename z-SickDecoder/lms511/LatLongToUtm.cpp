@@ -135,7 +135,7 @@ double eccentricity,radiuseq,knaught;
   //  ctrlon = (PI/180.0)*ctrlondeg;
      ctrlon = deg2rad(ctrlondeg);
 
-        printf("ctrlondeg: %lf\n",ctrlondeg);
+        //printf("ctrlondeg: %lf\n",ctrlondeg);
     
     
     for(pct=0;pct<numpts;pct++) {
