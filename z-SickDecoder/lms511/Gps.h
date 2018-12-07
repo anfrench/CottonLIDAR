@@ -18,7 +18,7 @@ class GPS
 	
 
 	//Defined
-	float string2Float(string stringIN);
+	double string2double(string stringIN);
 	public:
 	GPS();
 	void setString(string GPS_IN);

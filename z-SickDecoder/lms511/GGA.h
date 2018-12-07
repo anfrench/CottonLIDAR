@@ -8,9 +8,9 @@ class GGA : public GPS
 {
 	private:
 	int quality, SVNum;
-	float hdop, height, geoidSeparation;
+	double hdop, height, geoidSeparation;
 	string heightUnit, geoidUnit;
-	float reccordAge;
+	double reccordAge;
 	
 	
 	protected:
@@ -19,10 +19,10 @@ class GGA : public GPS
 	void decode();
 	int getQuality();
 	int getSVNum();
-	float getHdop(); 
-	float getHeight(); 
-	float getGeoidSeparation();
-	float getReccordAge();
+	double getHdop(); 
+	double getHeight(); 
+	double getGeoidSeparation();
+	double getReccordAge();
 	
 	string toString();
 };

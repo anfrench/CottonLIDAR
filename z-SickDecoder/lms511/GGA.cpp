@@ -26,20 +26,20 @@ void GGA::decode()
 	tokens[14]=GPS_String;
 	
 	ID				=tokens[0];
-	utc 			= (int)string2Float(tokens[1]);
-	latitude 		= string2Float(tokens[2])/100;
+	utc 			= (int)string2double(tokens[1]);
+	latitude 		= string2double(tokens[2])/100;
 	latDirection 	= tokens[3];
-	longitude 		= string2Float(tokens[4])/100;
+	longitude 		= string2double(tokens[4])/100;
 	longDirection 	= tokens[5];
 	if(longDirection.find("W")!= std::string::npos){longitude *= -1;}
-	quality 		= (int) string2Float(tokens[6]);
-	SVNum 			= (int) string2Float(tokens[7]);
-	hdop 			= string2Float(tokens[8]);
-	height 			= string2Float(tokens[9]);
+	quality 		= (int) string2double(tokens[6]);
+	SVNum 			= (int) string2double(tokens[7]);
+	hdop 			= string2double(tokens[8]);
+	height 			= string2double(tokens[9]);
 	heightUnit 		= tokens[10];
-	geoidSeparation = string2Float(tokens[11]);
+	geoidSeparation = string2double(tokens[11]);
 	geoidUnit 		= tokens[12];
-	reccordAge 		= string2Float(tokens[13]);
+	reccordAge 		= string2double(tokens[13]);
 	checkSum 		= tokens[14];
 	
 }
@@ -64,10 +64,10 @@ string GGA::toString()
 
 int GGA::getQuality(){return quality;}
 int GGA::getSVNum(){return SVNum;}
-float GGA::getHdop(){return hdop;} 
-float GGA::getHeight(){return height;} 
-float GGA::getGeoidSeparation(){return geoidSeparation;}
-float GGA::getReccordAge(){return reccordAge;}
+double GGA::getHdop(){return hdop;} 
+double GGA::getHeight(){return height;} 
+double GGA::getGeoidSeparation(){return geoidSeparation;}
+double GGA::getReccordAge(){return reccordAge;}
 
 
 
