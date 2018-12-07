@@ -24,3 +24,10 @@ NewLidar/
 
 *.o
 *.O
+
+*.json
+*.Json
+
+*.vscode
+
+
