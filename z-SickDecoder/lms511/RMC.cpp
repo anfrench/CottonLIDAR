@@ -22,18 +22,18 @@ void RMC::decode()
 	tokens[12]=GPS_String;
 	
 	ID				=tokens[0];
-	utc 			= (int)string2Float(tokens[1]);
-	active 			=(((int) string2Float(tokens[2]))) ==1 ? true : false;
+	utc 			= (int)string2double(tokens[1]);
+	active 			=(((int) string2double(tokens[2]))) ==1 ? true : false;
 	
-	latitude 		= string2Float(tokens[3])/100;
+	latitude 		= string2double(tokens[3])/100;
 	latDirection 	= tokens[4];
-	longitude 		= string2Float(tokens[5])/100;
+	longitude 		= string2double(tokens[5])/100;
 	longDirection 	= tokens[6];
 	if(longDirection.find("W")!=std::string::npos){longitude *= -1;}
-	speed			= string2Float(tokens[7]);
-	heading			=  string2Float(tokens[8]);
-	date 			= string2Float(tokens[9]);
-	magneticVariation 		= string2Float(tokens[10]);
+	speed			= string2double(tokens[7]);
+	heading			=  string2double(tokens[8]);
+	date 			= string2double(tokens[9]);
+	magneticVariation 		= string2double(tokens[10]);
 	checkSum 		= tokens[11];
 	
 	
@@ -55,7 +55,7 @@ string RMC::toString()
 }
 
 bool RMC::isActive(){return active;}
-float RMC::getSpeed(){return speed;}
-float RMC::getHeading(){return heading;}
-float RMC::getDate(){return date;}
-float RMC::getMagneticVariation(){return magneticVariation;}
+double RMC::getSpeed(){return speed;}
+double RMC::getHeading(){return heading;}
+double RMC::getDate(){return date;}
+double RMC::getMagneticVariation(){return magneticVariation;}

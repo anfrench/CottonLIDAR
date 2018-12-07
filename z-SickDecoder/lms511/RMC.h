@@ -5,8 +5,8 @@ class RMC : public GPS
 {
 	private:
 	bool active;
-	float speed, heading, date;
-	float magneticVariation;
+	double speed, heading, date;
+	double magneticVariation;
 	protected:
 	public:
 	RMC();
@@ -14,10 +14,10 @@ class RMC : public GPS
 	void decode();
 
 	bool isActive();
-	float getSpeed();
-	float getHeading();
-	float getDate();
-	float getMagneticVariation();
+	double getSpeed();
+	double getHeading();
+	double getDate();
+	double getMagneticVariation();
 	string toString();
 };
 

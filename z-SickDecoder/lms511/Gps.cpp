@@ -37,9 +37,9 @@ void GPS::setString(string GPS_IN)
 	latLongToUTM();
 }
 
-float GPS::string2Float(string stringIN)
+double GPS::string2double(string stringIN)
 {
-	float num;
+	double num;
 	stringstream ss(stringIN);
 	ss >> num;
 	return num;
