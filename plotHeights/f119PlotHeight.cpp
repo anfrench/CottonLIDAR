@@ -35,7 +35,8 @@ struct PlantHeights
 };
 void printTime(int seconds);
 PlantHeights findHeight(int id, pclCluster *row );
-PlantHeights findQuintileHeight(int id, pclCluster *row,int percentage );
+PlantHeights findquantileHeight(int id, pclCluster *row,int percentage );
+PlantHeights findquantileDifference(int id, pclCluster *row,int percentage );
 void utcScanner(string line, int *id, string* dim1, float*high1,float*low1,string* dim2, float*high2,float*low2);
 float string2Float(string in);
 string intToString(int in);
@@ -46,7 +47,8 @@ int main()
 	float zHeight=10, zMin=-5;
 	int canopyDencity;
 	vector<PlantHeights> heights;
-	vector<PlantHeights> quintileHeights;
+	vector<PlantHeights> quantileHeights;
+	vector<PlantHeights> quantileDifference;//need to impliment this.
 	//variables used for timeStamps
 	time_t timeTotal, timePer, end;
 	timeTotal=time(NULL);
@@ -135,23 +137,23 @@ int main()
 
 				//finding plant height 
 				heights.push_back(findHeight(id,row ));
-				quintileHeights.push_back(findQuintileHeight(id,row,95));
+				quantileHeights.push_back(findquantileHeight(id,row,95));
 			}
 			
 			//deleting clouds
 			cluster->cloud.reset();			
 
 			//printing results to file
-			fprintf(outFile, "Plot_ID, Average_Height, Standard_Deveatioin, averageQuintile, quintileStandearDeveation\n" );
+			fprintf(outFile, "Plot_ID, Average_Height, Standard_Deveatioin, averagequantile, quantileStandearDeveation\n" );
 			for(int i=0; i<heights.size(); i++)
 			{
 				fprintf(outFile, "%s,%f,%f", heights[i].id.c_str(), heights[i].avHeight, heights[i].stdDev);
-				fprintf(outFile, ",%f,%f\n", quintileHeights[i].avHeight, quintileHeights[i].stdDev);
+				fprintf(outFile, ",%f,%f\n", quantileHeights[i].avHeight, quantileHeights[i].stdDev);
 		   	}
 			
 			//clearing vector
 			heights.clear();
-			quintileHeights.clear();
+			quantileHeights.clear();
 			fclose(outFile);
 			bounds.close();
 			//printing time per file
@@ -235,7 +237,7 @@ PlantHeights findHeight(int id, pclCluster *row )
 }
 
 ///working on this method.
-PlantHeights findQuintileHeight(int id, pclCluster *row,int percentage )
+PlantHeights findquantileHeight(int id, pclCluster *row,int percentage )
 {
 	vector<float> heights;
 	string Id, iD,ID;
@@ -276,6 +278,52 @@ PlantHeights findQuintileHeight(int id, pclCluster *row,int percentage )
 	return temp;
 }
 
+
+
+/*
+	This is where I'm working.... 
+	find a way to subtract the min from the max...
+*/
+PlantHeights findquantileDifference(int id, pclCluster *row,int percentage )
+{
+	vector<float> heights;
+	string Id, iD,ID;
+	PlantHeights temp;
+	int numPoints =0;
+
+	for(int i=0; i<row->cloud->points.size(); i++ )
+	{
+		heights.push_back(row->cloud->points[i].z);
+	}
+	percentage= (int)((percentage*heights.size())/100);
+	sort(heights.begin(),heights.end());
+	
+	float sum=0;
+	for(int i = percentage; i< heights.size(); i++)
+	{
+		sum += heights[i];
+		numPoints ++;
+	}
+	temp.avHeight = sum/(numPoints);
+	
+	sum=0;
+	for(int i = percentage; i< heights.size(); i++ )
+	{
+		sum+= pow(heights[i]-temp.avHeight,2);
+	}
+	temp.stdDev= sqrt(sum/numPoints);
+
+	id --;
+	
+	Id=intToString((id%8)+1);
+	iD=intToString((((int)id/8)%5)+1);
+	ID=intToString(((int)id/40)+1);
+	
+	
+	temp.id= Id+":"+ID+":"+iD;
+	//cout<<temp.id<<", "<<temp.avHeight<<", "<<temp.stdDev<<endl;
+	return temp;
+}
 
 
 
