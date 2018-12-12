@@ -15,6 +15,8 @@ int main()
 	lidarFile.open("zrawLidar.txt");
 	PointCloudBuilder builder;
 
+	gps.setOffsetDist(1);
+
 	while(getline(lidarFile,line))
 	{
 		try
