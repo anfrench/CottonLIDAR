@@ -1,37 +1,46 @@
 #include <string>
 #include <fstream>
-#include "ModGPS.h"
+#include "GPSInterp.h"
+#include "LMS511Data.h"
+#include "PointCloudBuilder.h"
+#include "MergeTime.h"
+
 using namespace std;
 
 int main()
 {
-
+	GPSInterp gps("zrawGPS.txt");
 	string line;
-	ifstream gps;
-	gps.open("File.txt");
+	ifstream lidarFile;
+	lidarFile.open("zrawLidar.txt");
+	PointCloudBuilder builder;
 
-	if (gps.is_open())
-	{
-		cout << "open";
-	}
-
-	ModGPS mod;
-	int i = 0;
-
-	while (getline(gps, line) && i < 5000)
+	while(getline(lidarFile,line))
 	{
 		try
 		{
-			mod.readGpsString(line);
-			cout<<fixed;
-			cout << "\t\t\t\t\tNorthing: " << mod.getNorthing() << " Easting: " << mod.getEasting() << endl;
-			i++;
+		MergeTime transmitionTime;
+		transmitionTime.setStamp(line);
+
+		ModGPS location;
+		location = gps.getLocation(transmitionTime.getTime());
+
+		LMS511Scan lidar;
+		lidar.setScan(line);
+		lidar.decode();
+
+		builder.addPoints(lidar.getDistValues(),lidar.getStartAngle(), lidar.getAngularStep());
+		builder.rotateRow(location.getHeading());
+		builder.placeRow(location.getNorthing(), location.getEasting());
 		}
-		catch (const char *e)
+		catch(const char * e)
 		{
-			cout << e << endl;
+
 		}
+		catch(...){}
 	}
+	
+	builder.writeFile("Test.pcd");
 
 	return 0;
 }

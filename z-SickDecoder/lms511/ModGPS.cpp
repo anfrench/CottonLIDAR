@@ -66,4 +66,4 @@ string ModGPS::toString()
 	return string;
 }
 
-
+double ModGPS::getTime(){return genericTime;}

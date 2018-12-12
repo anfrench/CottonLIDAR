@@ -76,26 +76,15 @@ void LMS400Scan::decode()
 {
 	if(scan.find("sSI 5A") != string::npos)
 	{
-		if(scan.find("03><02") == string::npos)
-		{
-			scan = scan.substr(0, scan.find("03><02")+3);
-		}
-		else
+		if(scan.find("F86DF7") == string::npos)
 		{
 			throw "LMS511: Scan Corruped - No Data";
 		}
 	}
-
 	decodeInfoBlocks();
 	decodeData();
 }
 	
-/*
-	Sets the scan to the 
-	passed in string
-*/
-
-
 /*
 	getters / setters
 */
@@ -104,6 +93,10 @@ string LMS400Scan::getScan()
 	return scan;
 }
 
+/*
+	Sets the scan to the 
+	passed in string
+*/
 void LMS400Scan::setScan(string scanIn)
 {
 	scan = scanIn;

@@ -48,7 +48,8 @@ void MergeTime::decodeLidarTime()
 	hour= stoi(token[2]);
 	minute= stoi(token[3]);
 	second= stoi(token[4]);
-	fractionalSecond = stof(token[5]);
+	fractionalSecond = stof(token[5])/ 1000;
+
 }
 	
 void MergeTime::decodeGPSTime()

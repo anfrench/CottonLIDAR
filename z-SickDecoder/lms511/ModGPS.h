@@ -15,6 +15,7 @@ class ModGPS
 	double northing, easting;
 	int utc;
 	double genericTime;
+	
 	public:
 	double getSpeed(); 
 	double getHeading();

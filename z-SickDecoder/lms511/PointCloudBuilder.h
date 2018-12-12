@@ -1,5 +1,6 @@
 #include <vector>
-//#include <math.h>
+#include <fstream>
+//#include <stdio.h>
 #include <cmath>
 
 #define _USE_MATH_DEFINES
@@ -15,7 +16,12 @@ class Point
 class PointCloudBuilder
 {
   private:
-    std::vector<Point> cloud, workingRow;
+    int numberofPoints=0;
+    Point minPoint;
+    std::vector<Point> workingRow;
+    std::ofstream cloud;
+
+
   const double PI  =3.141592653589793238463;
   protected:
   public:
@@ -26,4 +32,10 @@ class PointCloudBuilder
 
   double toRad(double angle, int steps);
   double toDegree(double angle, int steps);
+
+  void writeFile(std::string fileName);
+
+  void adjustPoint(Point *p);
+  void updateMin(Point p);
 };
+
