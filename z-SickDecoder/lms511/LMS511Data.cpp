@@ -75,6 +75,10 @@ int LMS511Scan::getTransmitionTime()
 	return timeOfTransmision;
 }
 
+vector<int> LMS511Scan::getDistValues()
+{
+	return distValues;
+}
 
 
 

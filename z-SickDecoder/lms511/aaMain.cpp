@@ -65,7 +65,7 @@ int main()
 		#if DBUG
 				cout <<"Decoded Lidar"<<endl; 
 		#endif
-
+		
 		builder.addPoints(lidar.getDistValues(),lidar.getStartAngle(), lidar.getAngularStep());
 		builder.rotateRow(location.getHeading());
 		builder.placeRow(location.getNorthing(), location.getEasting());

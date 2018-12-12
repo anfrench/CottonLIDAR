@@ -22,7 +22,7 @@ class LMS511Scan : public LMS400Scan
 	virtual string toString();
 	int getTransmitionTime();
 	
-	
+	virtual vector<int> getDistValues();
 	
 };
 
