@@ -28,8 +28,8 @@ void PointCloudBuilder::rotateRow(double heading)
     for(int i=0; i<workingRow.size(); i++)
     {
         Point p = workingRow[i];
-        p.y= p.x * sin(heading);
-        p.x = p.x * cos(heading);
+        p.y= p.y * cos(heading);
+        p.x = p.x * sin(heading);
         workingRow[i] = p;
     }
 }
@@ -42,7 +42,9 @@ void PointCloudBuilder::placeRow(double northing, double easting)
         workingRow.pop_back();
         p.x+=easting;
         p.y+=northing;
+
         cloud<<p.x<<" "<<p.y<<" "<<p.z<<"\n";
+        
         numberofPoints++;
         updateMin(p);
     }
