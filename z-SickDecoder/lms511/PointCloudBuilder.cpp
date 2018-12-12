@@ -13,7 +13,7 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
     {
         Point p;
         p.y=0;
-        p.x= std::cos(angle) * distance[i];
+        p.x= std::sin(angle) * distance[i];
         p.z = std::sin(angle) * distance[i];
 
         workingRow.push_back(p);
@@ -42,7 +42,9 @@ void PointCloudBuilder::placeRow(double northing, double easting)
         workingRow.pop_back();
         p.x+=easting;
         p.y+=northing;
+
         cloud<<p.x<<" "<<p.y<<" "<<p.z<<"\n";
+
         numberofPoints++;
         updateMin(p);
     }

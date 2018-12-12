@@ -1,4 +1,3 @@
-#pragma once
 #include "LatLongToUtm.h"
 //forward decloration of functions
 
