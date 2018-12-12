@@ -68,7 +68,7 @@ void PointCloudBuilder::writeFile(std::string fileName)
     std::ofstream PCDFile;
     std::string pointLine;
 
-    points=fopen("tempFile.txt", "w");
+    points=fopen("tempFile.txt", "r");
     PCDFile.open(fileName);
 
     PCDFile<<"# .PCD v.7 - Point Cloud Data file format\n";
