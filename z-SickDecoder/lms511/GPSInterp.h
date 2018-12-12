@@ -5,7 +5,9 @@
 
 #define debug 0
 #define Qsize 50
-
+#if debug
+#include <iostream>
+#endif
 
 class GPSInterp
 {

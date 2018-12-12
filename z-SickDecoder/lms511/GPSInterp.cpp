@@ -16,17 +16,34 @@ ModGPS GPSInterp::getLocation(double time)
 
     int index;
     ModGPS location;
+    #if debug
+    std::cout<<"getLocation::adjusting time. "<<endl;
+    #endif
     adjustIndex(time);
+
+    #if debug
+    std::cout<<"getLocation::finding index "<<endl;
+    #endif
     index = findIndex(time);
 
     if(index <= 0 || index >= gps.size()-2){throw "Time not in bounds!";}
 
+    #if debug
+    std::cout<<"getLocation::setting heading "<<endl;
+    #endif
     location.setHeading(findHeading());
+
+    #if debug
+    std::cout<<"getLocation::setting utm "<<endl;
+    #endif
     setUTM(&location, index, time);
     location.setTime(time);
 
+    #if debug
+    std::cout<<"getLocation::applying offsets "<<endl;
+    #endif
     applyOffsets(&location);
-
+    
     return location;
 }
 
@@ -96,6 +113,7 @@ void GPSInterp::advance()
     {
         try
         {
+            if(file.eof()){file.close();}
             string line;
             getline(file, line);
             ModGPS spot;
@@ -103,7 +121,6 @@ void GPSInterp::advance()
             gps.push_back(spot);
             gps.erase(gps.begin());
             failed = false;
-            if(file.eof()){file.close();}
         }
         catch(const char *e)
         {
