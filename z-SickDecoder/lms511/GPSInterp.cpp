@@ -4,6 +4,8 @@ GPSInterp::GPSInterp(){PI = atan(1)*4;}
 GPSInterp::GPSInterp(std::string fileName)
 {
     PI = atan(1)*4;
+    offsetAngle=0;
+    offsetDist =0;
     openFile(fileName);
 }
 
@@ -19,9 +21,11 @@ ModGPS GPSInterp::getLocation(double time)
 
     if(index <= 0){throw "Time not in bounds!";}
 
-    setUTM(&location, index, time);
     location.setHeading(findHeading());
+    setUTM(&location, index, time);
     location.setTime(time);
+
+    applyOffsets(&location);
 
     return location;
 }
@@ -119,7 +123,7 @@ void GPSInterp::adjustIndex(double time)
     advanceCounter++;
     int index = findIndex(time);
      
-    if( (index>10 && file.is_open()) && (index >30  || advanceCounter > 25))
+    if( (index>10 && file.is_open()) && (index >25  || advanceCounter > 25))
     {   
         advance();   
     }
@@ -152,4 +156,31 @@ void GPSInterp::setUTM(ModGPS *location,int index, double time)
     location->setEasting(startLocation + increase);
 }
 
+void GPSInterp::setOffsetDist(double offsetDistIN)
+{
+    offsetDist = offsetDistIN;
+}
+
+void GPSInterp::setOffsetAngle(double offsetAngleIN)
+{
+    offsetAngle = PI*offsetAngleIN/180;
+}
+
 int GPSInterp::getSize(){return gps.size();}
+
+
+void GPSInterp::applyOffsets(ModGPS *location)
+{
+    double angle, northing, easting;
+    
+    angle = PI*location->getHeading()/180;
+    northing = location->getNorthing();
+    easting = location->getEasting();
+
+    angle += offsetAngle;
+    northing += offsetDist*cos(angle);
+    easting += offsetDist*sin(angle);
+
+    location->setNorthing(northing);
+    location->setEasting(easting);
+}
