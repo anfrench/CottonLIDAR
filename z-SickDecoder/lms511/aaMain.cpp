@@ -5,8 +5,9 @@
 #include "PointCloudBuilder.h"
 #include "MergeTime.h"
 
-#define CATCH 1
+#define CATCH 0
 #define PROGRESS 1
+#define DBUG 1
 
 #if PROGRESS
 	int countLidarLines(std::string fineName);
@@ -37,33 +38,51 @@ int main()
 		try
 		{
 		#if PROGRESS
-		currentStep ++;
+		currentScan ++;
 		if(currentScan>currentStep)
 		{
-			std::cout<<"\t\t\tProgress: "<<currentScan<<" of "<<totalScans<<endl;
-			currentStep ++;
+			std::cout<<"\t\t\tProgress: "<<currentScan/10000
+			<<" of "<<totalScans/10000<<endl;
+			currentStep += 1000;
 		}
 		#endif
 
 		MergeTime transmitionTime;
 		transmitionTime.setStamp(line);
+		#if DBUG
+				cout <<"Found time stamp"<<endl; 
+		#endif
 
 		ModGPS location;
 		location = gps.getLocation(transmitionTime.getTime());
+		#if DBUG
+				cout <<"Updated/recived GPS"<<endl; 
+		#endif
 
 		LMS511Scan lidar;
 		lidar.setScan(line);
 		lidar.decode();
+		#if DBUG
+				cout <<"Decoded Lidar"<<endl; 
+		#endif
 
 		builder.addPoints(lidar.getDistValues(),lidar.getStartAngle(), lidar.getAngularStep());
 		builder.rotateRow(location.getHeading());
 		builder.placeRow(location.getNorthing(), location.getEasting());
-
+		#if DBUG
+				cout <<"Processed a line"<<endl<<endl; 
+		#endif
 		}
 		catch(const char * e)
 		{
 			#if CATCH
 				cout <<e<<endl<<endl;
+			#endif
+		}
+		catch(const std::exception &exc)
+		{
+			#if CATCH
+				cout<<exc.what();
 			#endif
 		}
 		catch(...)
