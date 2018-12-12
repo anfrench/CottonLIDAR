@@ -29,3 +29,7 @@ NewLidar/
 
 *.win
 *.exe
+
+*.json
+*.Json
+
