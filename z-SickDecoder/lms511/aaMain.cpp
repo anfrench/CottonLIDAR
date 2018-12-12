@@ -7,7 +7,7 @@
 
 #define CATCH 0
 #define PROGRESS 1
-#define DBUG 1
+#define DBUG 0
 
 #if PROGRESS
 	int countLidarLines(std::string fineName);
@@ -43,7 +43,7 @@ int main()
 		{
 			std::cout<<"\t\t\tProgress: "<<currentScan/10000
 			<<" of "<<totalScans/10000<<endl;
-			currentStep += 1000;
+			currentStep += 10000;
 		}
 		#endif
 
