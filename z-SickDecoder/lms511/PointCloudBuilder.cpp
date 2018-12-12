@@ -43,11 +43,12 @@ void PointCloudBuilder::placeRow(double northing, double easting)
         p.x+=easting;
         p.y+=northing;
 
-        cloud<<p.x<<" "<<p.y<<" "<<p.z<<"\n";
+        cloud<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
 
         numberofPoints++;
         updateMin(p);
     }
+    cloud.flush();
 }
 
 double PointCloudBuilder::toRad(double angle, int steps)
