@@ -11,10 +11,11 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
     stepAngle = toRad(stepAngle, 360);
     for(int i=0; i<distance.size(); i++)
     {
+        double dist = ((double)distance[i]) /1000;
         Point p;
         p.y=0;
-        p.x= std::sin(angle) * distance[i];
-        p.z = std::sin(angle) * distance[i];
+        p.x= std::sin(angle) * dist;
+        p.z = std::sin(angle) * dist;
 
         workingRow.push_back(p);
 
