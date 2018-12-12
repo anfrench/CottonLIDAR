@@ -19,7 +19,7 @@ ModGPS GPSInterp::getLocation(double time)
     adjustIndex(time);
     index = findIndex(time);
 
-    if(index <= 0){throw "Time not in bounds!";}
+    if(index <= 0 || index >= gps.size()-2){throw "Time not in bounds!";}
 
     location.setHeading(findHeading());
     setUTM(&location, index, time);
