@@ -14,7 +14,8 @@ class LMS400Scan
 	string scan, parameterBlock, dataBlock, statusBlock;
 
 	//ParameterBlock Values
-	int comandAns, distResolution, startAngle, angularStep, measurementNumb;
+	double startAngle, angularStep;
+	int comandAns, distResolution, measurementNumb;
 	int scanRate, reflectivity, startReflectivity, stopReflectivity;
 	
 	//Status Block Values
@@ -25,6 +26,7 @@ class LMS400Scan
 	string swap2(string toSwap);
 	string swap4(string toSwap);
 	int hex2Dec(string stringHex);
+	float hex2Flo(string stringHex);
 	void partition(int start, int startData, int startStatus);
 	
 	//not defined in base class
@@ -50,8 +52,8 @@ class LMS400Scan
 	string getStats();
 	int getComand();
 	int getDistanceResolution();
-	int getStartAngle();
-	int getAngularStep();
+	double getStartAngle();
+	double getAngularStep();
 	int getMeasurementNumb();
 	int getScanRate();
 	int getReflectivity();
@@ -69,6 +71,7 @@ class LMS400Scan
 
 	//printing Functions
 	string toString();
+	string getStatusBlock();
 
 	// not defined in this class
 	virtual vector<int> getRemisValues();

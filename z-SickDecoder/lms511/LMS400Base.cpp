@@ -2,6 +2,8 @@
 
 //class LMS400Scan
 //not defined in base class
+string LMS400Scan::getStatusBlock(){return statusBlock;}
+
 void LMS400Scan::decodeData(){}
 vector<int> LMS400Scan::getRemisValues(){vector<int> vec; return vec;}
 vector<int> LMS400Scan::getDistValues()	{vector<int> vec; return vec;}
@@ -118,8 +120,8 @@ string LMS400Scan::getStats()
 
 int LMS400Scan::getComand(){return comandAns;}
 int LMS400Scan::getDistanceResolution(){return distResolution;}
-int LMS400Scan::getStartAngle(){return startAngle;}
-int LMS400Scan::getAngularStep(){return angularStep;}
+double LMS400Scan::getStartAngle(){return startAngle;}
+double LMS400Scan::getAngularStep(){return angularStep;}
 int LMS400Scan::getMeasurementNumb(){return measurementNumb;}
 int LMS400Scan::getScanRate(){return scanRate;}
 int LMS400Scan::getReflectivity(){return reflectivity;}
@@ -178,11 +180,31 @@ string LMS400Scan::swap4(string toSwap)
 int LMS400Scan::hex2Dec(string stringHex)
 {
 	
-	int dec;
+	union ulf
+	{
+    	unsigned int ui;
+    	int i;
+	};
+
+	ulf u;
 	stringstream transfer;
 	transfer<< std::hex << stringHex;
-	transfer>>dec;
-	return dec;
+	transfer>>u.ui;
+	return u.i;
+}
+
+float LMS400Scan::hex2Flo(string stringHex)
+{
+	union ulf
+	{
+    	unsigned long ul;
+    	float f;
+	};
+
+    ulf u;
+    stringstream ss(stringHex);
+    ss >> hex >> u.ul;
+    return u.f;
 }
 
 
