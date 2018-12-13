@@ -6,7 +6,7 @@
 #include "MergeTime.h"
 
 #define CATCH 0
-#define PROGRESS 1
+#define PROGRESS 0
 #define DBUG 0
 
 #if PROGRESS
