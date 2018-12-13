@@ -5,13 +5,13 @@ PointCloudBuilder::PointCloudBuilder()
     cloud.open("tempFile.txt");
 }
 
-void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, double stepAngle)
+void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, double stepAngle, double scale)
 {
     angle = toRad(angle, 360);
     stepAngle = toRad(stepAngle, 360);
     for(int i=0; i<distance.size(); i++)
     {
-        double dist = ((double)distance[i]) /1000;
+        double dist = ((double)distance[i]) /(1000*scale);
         Point p;
         p.y=0;
         p.x= std::sin(angle) * dist;
@@ -64,6 +64,7 @@ double PointCloudBuilder::toDegree(double angle, int steps)
 
 void PointCloudBuilder::writeFile(std::string fileName)
 {
+    numberofPoints = 192741809;
     cloud.close();
     FILE *points;
     std::ofstream PCDFile;
@@ -86,10 +87,12 @@ void PointCloudBuilder::writeFile(std::string fileName)
     for(int i=0; i<numberofPoints; i++)
     {
         Point p;
-        fscanf(points,"%f %f %f\n", &p.x, &p.y, &p.z);
+        fscanf(points,"%f %f %f", &p.x, &p.y, &p.z);
         adjustPoint(&p);
+        PCDFile.flush();
     }
     fclose(points);
+    PCDFile.flush();
     PCDFile.close();
 }
 

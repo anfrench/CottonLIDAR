@@ -26,7 +26,7 @@ class PointCloudBuilder
   protected:
   public:
   PointCloudBuilder();
-  void addPoints(std::vector<int> distance, double angle, double stepAngle);
+  void addPoints(std::vector<int> distance, double angle, double stepAngle, double scale);
   void rotateRow(double heading);
   void placeRow(double northing, double easting);
 
