@@ -18,6 +18,9 @@ using namespace std;
 
 int main()
 {
+	string gpsFileName, lidarFileName;
+	int timeoffsetMS;
+	
 	GPSInterp gps("zrawGPS.txt");
 	string line;
 	ifstream lidarFile;
