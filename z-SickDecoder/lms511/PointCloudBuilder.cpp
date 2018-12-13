@@ -116,3 +116,10 @@ void PointCloudBuilder::updateMin(Point p)
     if(p.y<minPoint.y){minPoint.y = p.y;}
     if(p.z<minPoint.z){minPoint.z = p.z;}
 }
+
+void PointCloudBuilder::setMin(int x, int y, int z)
+{
+    minPoint.x = x;
+    minPoint.y = y;
+    minPoint.z = z;
+}

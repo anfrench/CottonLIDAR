@@ -20,7 +20,8 @@ class PointCloudBuilder
     Point minPoint;
     std::vector<Point> workingRow;
     std::ofstream cloud;
-
+    void adjustPoint(Point *p);
+    void updateMin(Point p);
 
   const double PI  =3.141592653589793238463;
   protected:
@@ -34,8 +35,6 @@ class PointCloudBuilder
   double toDegree(double angle, int steps);
 
   void writeFile(std::string fileName);
-
-  void adjustPoint(Point *p);
-  void updateMin(Point p);
+  void setMin(int x, int y, int z);
 };
 
