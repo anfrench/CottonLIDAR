@@ -65,8 +65,7 @@ int main()
 		#if DBUG
 				cout <<"Decoded Lidar"<<endl; 
 		#endif
-		
-		builder.addPoints(lidar.getDistValues(),lidar.getStartAngle(), lidar.getAngularStep());
+		builder.addPoints(lidar.getDistValues(),lidar.getStartAngle(), lidar.getAngularStep(), lidar.getScaler());
 		builder.rotateRow(location.getHeading());
 		builder.placeRow(location.getNorthing(), location.getEasting());
 		#if DBUG
@@ -92,7 +91,7 @@ int main()
 			#endif
 		}
 	}
-	
+
 	builder.writeFile("Test.pcd");
 
 	return 0;
