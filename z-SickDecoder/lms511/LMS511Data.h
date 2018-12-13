@@ -21,7 +21,7 @@ class LMS511Scan : public LMS400Scan
 	LMS511Scan();
 	virtual string toString();
 	int getTransmitionTime();
-	
+	double getScaler();
 	virtual vector<int> getDistValues();
 	
 };

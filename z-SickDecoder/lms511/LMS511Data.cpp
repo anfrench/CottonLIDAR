@@ -1,6 +1,8 @@
 #include "LMS511Data.h"
-
+#include<iostream>
 LMS511Scan::LMS511Scan(){}
+
+double LMS511Scan::getScaler(){return scaleFactor;}
 
 void LMS511Scan::partition()
 {
@@ -18,18 +20,49 @@ void LMS511Scan::decodeInfoBlocks()
 	scanCounter =  hex2Dec(scan.substr(65,4));
 	timeFromStart = hex2Dec(scan.substr(70,8));
 	timeOfTransmision = hex2Dec(scan.substr(79,8));
-	scanFreq = hex2Dec(scan.substr(99,3));
-	measurementFreq = hex2Dec(scan.substr(103,3));
-	scaleFactor = hex2Dec(scan.substr(121,8));
-	scaleOffset = hex2Dec(scan.substr(130,8));
-	startAngle = hex2Dec(scan.substr(139,8));
-	angularStep = hex2Dec(scan.substr(148,3));
-	measurementNumb = hex2Dec(scan.substr(152,3));
+	scanFreq = hex2Dec(scan.substr(99,4));
+	measurementFreq = hex2Dec(scan.substr(104,3));
+	scaleFactor = hex2Flo(scan.substr(118,8));
+	scaleOffset = hex2Flo(scan.substr(127,8));
+	startAngle = hex2Dec(scan.substr(136,8))/10000.0;
+	angularStep = hex2Dec(scan.substr(145,4))/10000.0;
+	measurementNumb = hex2Dec(scan.substr(150,3));
 
+
+	/*
+	std::cout<<scan.substr(60,100);
+	std::cout<<std::endl;
+	std::cout<<"telegramCounter"<<scan.substr(60,4);
+	std::cout<<std::endl;
+	std::cout<<"scanCounter ="<<  scan.substr(65,4);
+	std::cout<<std::endl;
+	std::cout<<"timeFromStart ="<< scan.substr(70,8);
+	std::cout<<std::endl;
+	std::cout<<"timeOfTransmision="<< scan.substr(79,8);
+	std::cout<<std::endl;
+	std::cout<<"scanFreq ="<< scan.substr(99,4);
+	std::cout<<std::endl;
+	std::cout<<"measurementFreq ="<<scan.substr(104,3);
+	std::cout<<std::endl;
+	std::cout<<"scaleFactor ="<< scan.substr(118,8);
+	std::cout<<std::endl;
+	std::cout<<"scaleOffset ="<< scan.substr(127,8);
+	std::cout<<std::endl;
+	std::cout<<"startAngle ="<< scan.substr(136,8);
+	std::cout<<std::endl;
+	std::cout<<"angularStep ="<< scan.substr(145,4);
+	std::cout<<std::endl;
+	std::cout<<"measurementNumb ="<<scan.substr(150,3);
+	std::cout<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<std::endl;
+	*/
+	
 }
 
 string LMS511Scan::toString()
 {
+
 	string out = "";
 	out += "ComandAnswer: '"+ to_string(comandAns)+ "'\n";
 	out += "SerialNumber: '"+ Serial+ "'\n";
