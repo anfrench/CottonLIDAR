@@ -201,3 +201,8 @@ void GPSInterp::applyOffsets(ModGPS *location)
     location->setNorthing(northing);
     location->setEasting(easting);
 }
+
+ModGPS GPSInterp::currentLocation()
+{
+    return gps[(int)(gps.size()/2)];
+}

@@ -26,6 +26,9 @@ int main()
 	ifstream lidarFile;
 	lidarFile.open("zrawLidar.txt");
 	PointCloudBuilder builder;
+	builder.setMin(
+		gps.currentLocation().getNorthing(),
+		gps.currentLocation().getEasting(),0);
 
 	gps.setOffsetDist(1);
 
