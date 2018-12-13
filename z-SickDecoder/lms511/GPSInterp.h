@@ -32,7 +32,7 @@ public:
     GPSInterp();
     void openFile(std::string fileName);
     ModGPS getLocation(double time);
-   
+    ModGPS currentLocation();
    void setOffsetDist(double offsetDistIN);
    void setOffsetAngle(double offsetAngleIN);
    
