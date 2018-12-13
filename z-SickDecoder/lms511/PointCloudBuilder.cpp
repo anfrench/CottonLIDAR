@@ -64,7 +64,6 @@ double PointCloudBuilder::toDegree(double angle, int steps)
 
 void PointCloudBuilder::writeFile(std::string fileName)
 {
-    numberofPoints = 192741809;
     cloud.close();
     FILE *points;
     std::ofstream PCDFile;
@@ -89,6 +88,7 @@ void PointCloudBuilder::writeFile(std::string fileName)
         Point p;
         fscanf(points,"%f %f %f", &p.x, &p.y, &p.z);
         adjustPoint(&p);
+        PCDFile<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
         PCDFile.flush();
     }
     fclose(points);
