@@ -2,6 +2,9 @@
 
 PointCloudBuilder::PointCloudBuilder()
 {
+    minPoint.x = 0;
+    minPoint.y=0;
+    minPoint.z = 0;
     cloud.open("tempFile.txt");
 }
 

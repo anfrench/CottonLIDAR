@@ -20,7 +20,7 @@ int main()
 {
 	string gpsFileName, lidarFileName;
 	int timeoffsetMS;
-	
+
 	GPSInterp gps("zrawGPS.txt");
 	string line;
 	ifstream lidarFile;
@@ -95,6 +95,7 @@ int main()
 		}
 	}
 
+	
 	builder.writeFile("Test.pcd");
 
 	return 0;
