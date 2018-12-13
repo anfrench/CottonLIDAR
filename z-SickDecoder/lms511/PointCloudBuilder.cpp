@@ -47,6 +47,8 @@ void PointCloudBuilder::placeRow(double northing, double easting)
         p.x+=easting;
         p.y+=northing;
 
+        cloud << std::fixed << std::showpoint;
+        cloud << std::setprecision(6);
         cloud<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
 
         numberofPoints++;
@@ -91,6 +93,8 @@ void PointCloudBuilder::writeFile(std::string fileName)
         Point p;
         fscanf(points,"%f %f %f", &p.x, &p.y, &p.z);
         adjustPoint(&p);
+        PCDFile << std::fixed << std::showpoint;
+        PCDFile << std::setprecision(6);
         PCDFile<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
         PCDFile.flush();
     }
