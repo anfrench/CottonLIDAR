@@ -26,7 +26,7 @@ ModGPS GPSInterp::getLocation(double time)
     #endif
     index = findIndex(time);
 
-    if(index <= 0 || index >= gps.size()-2){throw "Time not in bounds!";}
+    if(index <= 0 || index >= gps.size()-4){throw "Time not in bounds!";}
 
     #if debug
     std::cout<<"getLocation::setting heading "<<endl;

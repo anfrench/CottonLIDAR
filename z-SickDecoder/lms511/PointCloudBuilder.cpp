@@ -15,12 +15,15 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
     for(int i=0; i<distance.size(); i++)
     {
         double dist = ((double)distance[i]) /(1000*scale);
-        Point p;
-        p.y=0;
-        p.x= std::sin(angle) * dist;
-        p.z = std::sin(angle) * dist;
-
-        workingRow.push_back(p);
+        
+        if(dist>0.4 && dist<80)
+        {
+            Point p;
+            p.y=0;
+            p.x= std::cos(angle) * dist;
+            p.z = std::sin(angle) * dist;
+            if(p.z>.7){workingRow.push_back(p);}
+        }
 
         angle+=stepAngle;
     }
@@ -77,17 +80,18 @@ void PointCloudBuilder::writeFile(std::string fileName)
     points.open("tempFile.txt");
     PCDFile.open(fileName);
 
-    PCDFile<<"# .PCD v.7 - Point Cloud Data file format\n";
-    PCDFile<<"VERSION .7\n";
-    PCDFile<<"FIELDS x y z\n";
-    PCDFile<<"SIZE 4 4 4 4\n";
-    PCDFile<<"TYPE F F F F\n";
-    PCDFile<<"COUNT 1 1 1\n";
-    PCDFile<<"WIDTH "<<numberofPoints<<"\n";
-    PCDFile<<"HEIGHT 1\n";
-    PCDFile<<"VIEWPOINT 0 0 0 1 0 0 0\n";
-    PCDFile<<"POINTS "<<numberofPoints<< "\n";
-    PCDFile<<"DATA ascii\n";
+    PCDFile<<"# .PCD v.7 - Point Cloud Data file format"<<std::endl;
+    PCDFile<<"VERSION .7"<<std::endl;
+    PCDFile<<"FIELDS x y z"<<std::endl;
+    PCDFile<<"SIZE 4 4 4"<<std::endl;
+    PCDFile<<"TYPE F F F"<<std::endl;
+    PCDFile<<"COUNT 1 1 1"<<std::endl;
+    PCDFile<<"WIDTH "<<numberofPoints<<std::endl;
+    PCDFile<<"HEIGHT 1"<<std::endl;
+    PCDFile<<"VIEWPOINT 0 0 0 1 0 0 0"<<std::endl;
+    PCDFile<<"POINTS "<<numberofPoints<<std::endl;
+    PCDFile<<"DATA ascii"<<std::endl;
+    int flush = 100000;
     for(int i=0; i<numberofPoints; i++)
     {
         Point p;
@@ -97,7 +101,12 @@ void PointCloudBuilder::writeFile(std::string fileName)
         PCDFile << std::fixed << std::showpoint;
         PCDFile << std::setprecision(6);
         PCDFile<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
-        PCDFile.flush();
+       if(i>flush)
+       {
+           PCDFile.flush();
+           flush+=100000;
+           std::cout<<i/100000<<"of"<<numberofPoints/100000<<std::endl;
+       }
     }
     points.close();
     PCDFile.flush();
@@ -106,7 +115,6 @@ void PointCloudBuilder::writeFile(std::string fileName)
 
 void PointCloudBuilder::adjustPoint(Point *p)
 {
-    std::cout<<"x: "<<p->x<<" - xMin: "<<minPoint.x<<" = "<< p->x-minPoint.x<<std::endl;
     p->x -= minPoint.x;
     p->y -= minPoint.y;
     p->z -= minPoint.z;
@@ -132,13 +140,6 @@ Point PointCloudBuilder::readPointString(std::string pointString)
     std::stringstream ss;
     ss<<pointString;
     ss>>p.x>>p.y>>p.z;
-    /*
-    std::string tokens[3];
-    tokens[0]=pointString.substr(0, pointString.find(" "));
-    pointString = pointString.substr(pointString.find(" "));
-    tokens[1]=pointString.substr(0, pointString.find(" "));
-    pointString = pointString.substr(pointString.find(" "));
-    tokens[2]= pointString;
-    */
+
     return p;
 }
