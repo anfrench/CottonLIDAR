@@ -18,13 +18,15 @@ int main()
 	vector<pclCluster> cloudSum;
 	int counter=0;
 	//setting crop values and output
-	cout<<"Enter Maximum Height: ";
-	cin>>cropMax;
-	cout<<"Enter Minimum Height: ";
-	cin>>cropMin;
-	cout<<"Enter Output File Name: \n";
-	getline(cin, outputFile);
-
+	//cout<<"Enter Maximum Height: ";
+	//cin>>cropMax;
+	//cout<<"Enter Minimum Height: ";
+	//cin>>cropMin;
+	//cout<<"Enter Output File Name: \n";
+	//getline(cin, outputFile);
+	
+	cropMax = 10;
+	cropMin = 0.27;
 
 	//File where the filenames are kept
 	fstream names;
