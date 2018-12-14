@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iomanip>
 #include <cmath>
+#include <sstream>
 
 #define _USE_MATH_DEFINES
 
@@ -22,7 +23,7 @@ class PointCloudBuilder
     std::ofstream cloud;
     void adjustPoint(Point *p);
     void updateMin(Point p);
-
+    Point readPointString(std::string pointString);
   const double PI  =3.141592653589793238463;
   protected:
   public:

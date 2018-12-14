@@ -1,5 +1,5 @@
 #include "PointCloudBuilder.h"
-
+#include <iostream>
 PointCloudBuilder::PointCloudBuilder()
 {
     minPoint.x = 0;
@@ -52,7 +52,7 @@ void PointCloudBuilder::placeRow(double northing, double easting)
         cloud<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
 
         numberofPoints++;
-        updateMin(p);
+        //updateMin(p);
     }
     cloud.flush();
 }
@@ -70,11 +70,11 @@ double PointCloudBuilder::toDegree(double angle, int steps)
 void PointCloudBuilder::writeFile(std::string fileName)
 {
     cloud.close();
-    FILE *points;
+    std::ifstream points;
     std::ofstream PCDFile;
     std::string pointLine;
 
-    points=fopen("tempFile.txt", "r");
+    points.open("tempFile.txt");
     PCDFile.open(fileName);
 
     PCDFile<<"# .PCD v.7 - Point Cloud Data file format\n";
@@ -91,20 +91,22 @@ void PointCloudBuilder::writeFile(std::string fileName)
     for(int i=0; i<numberofPoints; i++)
     {
         Point p;
-        fscanf(points,"%f %f %f", &p.x, &p.y, &p.z);
+        getline(points,pointLine);
+        p=readPointString(pointLine);
         adjustPoint(&p);
         PCDFile << std::fixed << std::showpoint;
         PCDFile << std::setprecision(6);
         PCDFile<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
         PCDFile.flush();
     }
-    fclose(points);
+    points.close();
     PCDFile.flush();
     PCDFile.close();
 }
 
 void PointCloudBuilder::adjustPoint(Point *p)
 {
+    std::cout<<"x: "<<p->x<<" - xMin: "<<minPoint.x<<" = "<< p->x-minPoint.x<<std::endl;
     p->x -= minPoint.x;
     p->y -= minPoint.y;
     p->z -= minPoint.z;
@@ -122,4 +124,21 @@ void PointCloudBuilder::setMin(int x, int y, int z)
     minPoint.x = x;
     minPoint.y = y;
     minPoint.z = z;
+}
+
+Point PointCloudBuilder::readPointString(std::string pointString)
+{
+    Point p;
+    std::stringstream ss;
+    ss<<pointString;
+    ss>>p.x>>p.y>>p.z;
+    /*
+    std::string tokens[3];
+    tokens[0]=pointString.substr(0, pointString.find(" "));
+    pointString = pointString.substr(pointString.find(" "));
+    tokens[1]=pointString.substr(0, pointString.find(" "));
+    pointString = pointString.substr(pointString.find(" "));
+    tokens[2]= pointString;
+    */
+    return p;
 }

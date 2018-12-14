@@ -6,7 +6,7 @@
 #include "MergeTime.h"
 
 #define CATCH 0
-#define PROGRESS 0
+#define PROGRESS 1
 #define DBUG 0
 
 #if PROGRESS
@@ -26,9 +26,7 @@ int main()
 	ifstream lidarFile;
 	lidarFile.open("zrawLidar.txt");
 	PointCloudBuilder builder;
-	builder.setMin(
-		gps.currentLocation().getNorthing(),
-		gps.currentLocation().getEasting(),0);
+	builder.setMin(445389.275375, 3656190.256213,0);
 
 	gps.setOffsetDist(1);
 
