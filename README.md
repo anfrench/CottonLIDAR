@@ -38,10 +38,11 @@
   * Finds the widths of a point cloud using slices of the point cloud at different heights.
 * ### PCD Maker
   * Makes PCD files of simple structures. Was used for testing methods from pclLib/pclMaker.
+  * ![Alt text](Photos/branch.PNG)
 * ### Plot Heights
   * Using a file of file names and a file containing a series of cropping instructions, finds average heights and writes a CSV file.
 * ### Smoothing
-  * A sample program from the [pointClouds.org](http://pointclouds.org/documentation/tutorials/resampling.php#moving-least-squares) used to smooth point clouds. 
+  * A sample program from the [pointClouds.org](http://pointclouds.org/documentation/tutorials/resampling.php#moving-least-squares) used to smooth point clouds.
 * ### Z-Sick Decoder
   * Excess Removal
     * Removes white space, extra newlines, and time stamps from lms400 data.

@@ -21,6 +21,7 @@
     (int   ) Scans Per Step?
 
 ![Alt text](/Photos/TurnTabledSmoothed.PNG)
+![Alt text](/Photos/SecondaryFilter.PNG)
 
 ## Feeding variables from a file
 
