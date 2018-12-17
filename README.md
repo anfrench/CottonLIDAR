@@ -15,7 +15,7 @@
   * Indexes each point of a cloud to a grid and prints the highest points to a csv file.
   ![Alt text](Photos/Canopy.PNG)
 * ### Normal Estimation
-  * Estimates the normals of a point cloud and creates a sphere to display the normal distrobution. 
+  * Estimates the normals of a point cloud and creates a sphere to display the normal distrobution.
    ![Alt text](Photos/Normals.PNG)
 * ### Point Cloud Editor
   * A terminal based program that has several functions to allow you to open and edit point clouds.
