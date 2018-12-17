@@ -18,13 +18,33 @@ using namespace std;
 
 int main()
 {
-	string gpsFileName, lidarFileName;
+	string outFileName;
 	int timeoffsetMS;
-
-	GPSInterp gps("zrawGPS.txt");
 	string line;
 	ifstream lidarFile;
-	lidarFile.open("zrawLidar.txt");
+	GPSInterp gps;
+
+	try
+	{
+		string gpsFileName, lidarFileName;
+
+		cout<<"Enter The GPS File Name: ";
+		getline(cin, gpsFileName);
+		cout<<"Enter The Lidar File Name: ";
+		getline(cin, lidarFileName);
+		cout<<"What Would You Like To Save As? ";
+		getline(cin, outFileName);
+
+		gps.openFile(gpsFileName);
+		lidarFile.open(lidarFileName);
+		if(!lidarFile.is_open()){throw "Could NOT open Lidar File.";}
+	}
+	catch(const char * e)
+	{
+		cout<<e;
+		exit(EXIT_FAILURE);
+	}
+
 	PointCloudBuilder builder;
 	builder.setMin(445389.275375, 3656190.256213,0);
 
@@ -97,7 +117,7 @@ int main()
 	}
 
 	
-	builder.writeFile("Test.pcd");
+	builder.writeFile(outFileName);
 
 	return 0;
 }
