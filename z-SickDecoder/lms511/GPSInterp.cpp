@@ -1,11 +1,14 @@
 #include "GPSInterp.h"
 
-GPSInterp::GPSInterp(){PI = atan(1)*4;}
-GPSInterp::GPSInterp(std::string fileName)
+GPSInterp::GPSInterp()
 {
     PI = atan(1)*4;
     offsetAngle=0;
     offsetDist =0;
+}
+GPSInterp::GPSInterp(std::string fileName)
+{
+    GPSInterp();
     openFile(fileName);
 }
 
@@ -54,17 +57,18 @@ int GPSInterp::findIndex(double time)
     {
         if(time<gps[k].getTime())
         {
-            index = k-1;
-            break;
+            return k-1;
         }
     }
-    return index;
+    return gps.size()-1;
 }
 
 void GPSInterp::openFile(std::string fileName)
 {
     std::string line;
     file.open(fileName);
+    if(!file.is_open()){throw "GPS File Could Not Be Opened!";}
+
     if(!gps.empty()){gps.clear();}
 
     while(getline(file, line) && gps.size()<Qsize)
@@ -140,9 +144,10 @@ void GPSInterp::adjustIndex(double time)
     advanceCounter++;
     int index = findIndex(time);
      
-    if( (index>10 && file.is_open()) && (index >25  || advanceCounter > 25))
+    while( (index>10 && file.is_open()) && (index >25  || advanceCounter > 25))
     {   
         advance();   
+        index = findIndex(time);
     }
     
 }
