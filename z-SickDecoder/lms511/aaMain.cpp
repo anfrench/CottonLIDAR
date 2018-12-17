@@ -133,5 +133,4 @@ int countLidarLines(std::string fileName)
 	lidar.close();
 	return count;
 }
-
 #endif
