@@ -24,7 +24,7 @@
    ![Alt text](Photos/TurnTabledSmoothed.PNG)
 * ### Cloud merger
   * Using a list of files names, combines all point clouds into one.
-   ![Alt text](Photos/TotalField.PNG)
+   ![Alt text](Photos\Merged.PNG)
 * ### Cluster Placement
   * Clusters cloud and replaces the clusters with a single point.
 * ### Clustering Tests
