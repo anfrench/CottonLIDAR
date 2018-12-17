@@ -118,6 +118,7 @@ void PointCloudBuilder::adjustPoint(Point *p)
     p->x -= minPoint.x;
     p->y -= minPoint.y;
     p->z -= minPoint.z;
+    p->z*= -1;
 }
 
 void PointCloudBuilder::updateMin(Point p)
