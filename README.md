@@ -13,7 +13,10 @@
   * Uses input parameters to cluster Point clouds and count the clusters.
 * ### Canopy ARC
   * Indexes each point of a cloud to a grid and prints the highest points to a csv file.
+  ![Alt text](Photos/Canopy.PNG)
 * ### Normal Estimation
+  * Estimates the normals of a point cloud and creates a sphere to display the normal distrobution. 
+   ![Alt text](Photos/Normals.PNG)
 * ### Point Cloud Editor
   * A terminal based program that has several functions to allow you to open and edit point clouds.
 * ### Turn Table
@@ -21,6 +24,7 @@
    ![Alt text](Photos/TurnTabledSmoothed.PNG)
 * ### Cloud merger
   * Using a list of files names, combines all point clouds into one.
+   ![Alt text](Photos/TotalField.PNG)
 * ### Cluster Placement
   * Clusters cloud and replaces the clusters with a single point.
 * ### Clustering Tests
