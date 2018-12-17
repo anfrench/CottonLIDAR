@@ -25,7 +25,7 @@
   * Clusters cloud and replaces the clusters with a single point.
 * ### Clustering Tests
   * Clusters a file and replaces the clusters with spheres of random colors. each cluster retains its location, approximate size, and approximate points.
-   ![Alt text](Photos/ClusteredZoom.png)
+   ![Alt text](Photos/ClusteredZoom.PNG)
 * ### Convex hull
   * Creates a canopy for the cloud, fills gaps, and does a quick triangulation to create a convex hull.
   ![Alt text](Photos/ConvexHull.png)
