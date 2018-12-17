@@ -18,14 +18,14 @@
   * A terminal based program that has several functions to allow you to open and edit point clouds.
 * ### Turn Table
   * Takes a file of new line delaminated LMS400 scans and projects them onto a rotating z axis.
-   ![Alt text](Photos/TurnTabledSmoothed.png)
+   ![Alt text](Photos/TurnTabledSmoothed.PNG)
 * ### Cloud merger
   * Using a list of files names, combines all point clouds into one.
 * ### Cluster Placement
   * Clusters cloud and replaces the clusters with a single point.
 * ### Clustering Tests
   * Clusters a file and replaces the clusters with spheres of random colors. each cluster retains its location, approximate size, and approximate points.
-   ![Alt text](Photos/ClusteredZoom.png)
+   ![Alt text](Photos/ClusteredZoom.PNG)
 * ### Convex hull
   * Creates a canopy for the cloud, fills gaps, and does a quick triangulation to create a convex hull.
   ![Alt text](Photos/ConvexHull.png)
@@ -44,4 +44,4 @@
     * Contains classes to process LMS400 lidar data.
   * LMS 511
     * A program to merge strings of GPS data and LMS 511 data to create a point cloud.
-      ![Alt text](Photos/NewGPSLidarToPCD.png)
+      ![Alt text](Photos/NewGPSLidarToPCD.PNG)
