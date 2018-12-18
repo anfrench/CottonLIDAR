@@ -115,10 +115,11 @@ void PointCloudBuilder::writeFile(std::string fileName)
 
 void PointCloudBuilder::adjustPoint(Point *p)
 {
-    p->x -= minPoint.x;
-    p->y -= minPoint.y;
-    p->z -= minPoint.z;
+    //p->x -= minPoint.x;
+    //p->y -= minPoint.y;
     p->z*= -1;
+    p->z += minPoint.z;
+    
 }
 
 void PointCloudBuilder::updateMin(Point p)

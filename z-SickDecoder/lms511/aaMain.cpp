@@ -46,7 +46,7 @@ int main()
 	}
 
 	PointCloudBuilder builder;
-	builder.setMin(445389.275375, 3656190.256213,0);
+	builder.setMin(445389.275375, 3656190.256213,1.7);
 
 	gps.setOffsetDist(1);
 
