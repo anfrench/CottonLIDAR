@@ -33,3 +33,6 @@ NewLidar/
 *.json
 *.Json
 
+*.out
+*.Out
+*.OUT
