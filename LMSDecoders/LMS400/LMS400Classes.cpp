@@ -1,4 +1,4 @@
-#include "LMS400DataClasses.h"
+#include "LMS400Classes.h"
 
 //class LMS400DistanceOnly 
 LMS400DistanceOnly::LMS400DistanceOnly(string scanIn):LMS400Scan(scanIn)

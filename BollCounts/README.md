@@ -35,9 +35,10 @@ If you want to run the program without entering the variables each time:
 ## Example
 
 ### Terminal
+
     ./TestProgram < param.txt
 
-#### param.txt:
+#### param.txt
 
     2.0
     5

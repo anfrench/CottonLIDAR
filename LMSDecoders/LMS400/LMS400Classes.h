@@ -1,5 +1,5 @@
 #pragma once
-#include "LMS400DataBase.h"
+#include "LMS400Base.h"
 #include <string>
 #include <vector>
 #include <sstream>

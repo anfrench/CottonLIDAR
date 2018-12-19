@@ -1,5 +1,5 @@
 Main: aaMain.cpp GPSInterp.o ModGPS.o Gps.o GGA.o RMC.o MergeTime.o PointCloudBuilder.o LatLongToUtm.o LMS511Data.o LMS400Base.o
-	g++ -std=c++11 -o lidar2PCD aaMain.cpp GPSInterp.o ModGPS.o MergeTime.o Gps.o GGA.o RMC.o LatLongToUtm.o PointCloudBuilder.o LMS511Data.o LMS400Base.o
+	g++ -std=c++11 -o lidar2PCD.out aaMain.cpp GPSInterp.o ModGPS.o MergeTime.o Gps.o GGA.o RMC.o LatLongToUtm.o PointCloudBuilder.o LMS511Data.o LMS400Base.o
 
 GPSInterp.o: GPSInterp.cpp 
 	g++ -std=c++11 -c GPSInterp.cpp

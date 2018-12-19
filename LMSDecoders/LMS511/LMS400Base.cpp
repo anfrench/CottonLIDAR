@@ -2,6 +2,8 @@
 
 //class LMS400Scan
 //not defined in base class
+string LMS400Scan::getStatusBlock(){return statusBlock;}
+
 void LMS400Scan::decodeData(){}
 vector<int> LMS400Scan::getRemisValues(){vector<int> vec; return vec;}
 vector<int> LMS400Scan::getDistValues()	{vector<int> vec; return vec;}
@@ -74,16 +76,17 @@ void LMS400Scan::decodeInfoBlocks()
 */
 void LMS400Scan::decode()
 {
+	if(scan.find("sSI 5A") != string::npos)
+	{
+		if(scan.find("F86DF7") == string::npos)
+		{
+			throw "LMS511: Scan Corruped - No Data";
+		}
+	}
 	decodeInfoBlocks();
 	decodeData();
 }
 	
-/*
-	Sets the scan to the 
-	passed in string
-*/
-
-
 /*
 	getters / setters
 */
@@ -92,6 +95,10 @@ string LMS400Scan::getScan()
 	return scan;
 }
 
+/*
+	Sets the scan to the 
+	passed in string
+*/
 void LMS400Scan::setScan(string scanIn)
 {
 	scan = scanIn;
@@ -113,8 +120,8 @@ string LMS400Scan::getStats()
 
 int LMS400Scan::getComand(){return comandAns;}
 int LMS400Scan::getDistanceResolution(){return distResolution;}
-int LMS400Scan::getStartAngle(){return startAngle;}
-int LMS400Scan::getAngularStep(){return angularStep;}
+double LMS400Scan::getStartAngle(){return startAngle;}
+double LMS400Scan::getAngularStep(){return angularStep;}
 int LMS400Scan::getMeasurementNumb(){return measurementNumb;}
 int LMS400Scan::getScanRate(){return scanRate;}
 int LMS400Scan::getReflectivity(){return reflectivity;}
@@ -133,7 +140,7 @@ int LMS400Scan::getSystemCounter(){return systemCounter;}
 /*
 	@param 	int start of param block
 			int start of data
-			int start of status
+			int Length of status
 	@return void
 	
 	@use	partitions the scan into the paramiter, data, and status block
@@ -172,11 +179,32 @@ string LMS400Scan::swap4(string toSwap)
 */
 int LMS400Scan::hex2Dec(string stringHex)
 {
-	int dec;
+	
+	union ulf
+	{
+    	unsigned int ui;
+    	int i;
+	};
+
+	ulf u;
 	stringstream transfer;
 	transfer<< std::hex << stringHex;
-	transfer>>dec;
-	return dec;
+	transfer>>u.ui;
+	return u.i;
+}
+
+float LMS400Scan::hex2Flo(string stringHex)
+{
+	union ulf
+	{
+    	unsigned long ul;
+    	float f;
+	};
+
+    ulf u;
+    stringstream ss(stringHex);
+    ss >> hex >> u.ul;
+    return u.f;
 }
 
 

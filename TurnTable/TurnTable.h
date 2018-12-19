@@ -2,7 +2,7 @@
 #include <vector>
 #include <math.h>
 #include <fstream>
-#include "LMS400DataClasses.h"
+#include "LMS400Classes.h"
 #define PI 3.14159265
 
 using namespace std;

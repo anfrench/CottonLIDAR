@@ -1,4 +1,4 @@
-#include "LMS400DataBase.h"
+#include "LMS400Base.h"
 
 //class LMS400Scan
 //not defined in base class

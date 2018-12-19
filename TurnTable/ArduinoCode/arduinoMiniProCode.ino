@@ -19,7 +19,7 @@
 #define NUMSCANS 6
 #define NUMSTEPS 500
 
-#define DOLIDAR 0
+#define DOLIDAR false
 #define DOPHOTO true
 
 /*
