@@ -4,6 +4,7 @@
 #include "LMS511Data.h"
 #include "PointCloudBuilder.h"
 #include "MergeTime.h"
+#include "ConfigReader.h"
 
 #define CATCH 0
 #define PROGRESS 1
@@ -47,6 +48,23 @@ int main()
 
 	PointCloudBuilder builder;
 	builder.setMin(445389.275375, 3656190.256213,1.7);
+
+	try
+	{
+		ConfigReader configuration;
+		
+		gps.setOffsetDist(configuration.getMountingXYDist());
+		gps.setOffsetAngle(configuration.getMountingAngle());
+		
+		builder.setMountingHeight(configuration.getMountingHeight());
+		builder.setRoll(configuration.getRoll());
+		builder.setPitch(configuration.getPitch()); //not acounted for (Does nothing)
+		builder.setYaw(configuration.getYaw()); //not acounted for (Does nothing)
+	}
+	catch(const char *e)
+	{
+
+	}
 
 	gps.setOffsetDist(1);
 

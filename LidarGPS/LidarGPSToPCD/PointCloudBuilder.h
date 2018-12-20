@@ -17,6 +17,10 @@ class Point
 class PointCloudBuilder
 {
   private:
+    double mountingHeight;
+    double roll, pitch, yaw;
+
+    bool adjust;
     int numberofPoints=0;
     Point minPoint;
     std::vector<Point> workingRow;
@@ -37,5 +41,9 @@ class PointCloudBuilder
 
   void writeFile(std::string fileName);
   void setMin(int x, int y, int z);
+  void setMountingHeight(double heightIn);
+  void setRoll(double rollIN);
+	void setPitch(double pitchIN);
+	void setYaw(double yawIN);
 };
 
