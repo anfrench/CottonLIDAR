@@ -17,23 +17,24 @@ int main()
 	pclCluster cluster;
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
 	
-	int pointNumb=50;
-	float diam=.5, length = 1, ringDen=7;
-	
+	int pointNumb=100000;
+	float diam=.3, length = 3, ringDen=1;
+	/*
 	cout<<"Number of points:  ";
 	cin>>pointNumb;
 	cout<<"diamiter:  ";
 	cin>>diam;
 	cout<<"length:  ";
 	cin>>length;
+	*/
 	cout<<"ring Dencity:  ";
 	cin>>ringDen;
 	
-	//cloud = makeBranch(diam,length,ringDen ,pointNumb);
-	cloud = makeCircle(.3, 100);
+	cloud = makeBranch(diam,length,ringDen ,pointNumb);
+	//cloud = makeCircle(.3, 100);
 
 	for(int i=0; i<100; i++){cloud->points[i].z += 2;}
-	
+	/*
 	cluster.cloud = cloud;
 	cluster.findSize();
 	cout<<"Points"<<cluster.cloud->points.size() <<endl;
@@ -47,6 +48,7 @@ int main()
 	cout<<"Width :"<<cluster.width <<endl;
 	cout<<"Height:"<<cluster.height <<endl;
 	cout<<"length:"<<cluster.length <<endl;
+	*/
 	pcl::io::savePCDFileASCII("Branch.pcd", *cloud);
 	
 	return 0;	
