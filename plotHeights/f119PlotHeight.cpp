@@ -223,7 +223,7 @@ PlantHeights findHeight(int id, pclCluster *row )
 	temp.stdDev= sqrt(sum/row->cloud->points.size());
 	
 	
-	temp.id= id;
+	temp.id= intToString(id);
 	//cout<<temp.id<<", "<<temp.avHeight<<", "<<temp.stdDev<<endl;
 	return temp;
 }
@@ -257,7 +257,7 @@ PlantHeights findquantileHeight(int id, pclCluster *row,int percentage )
 	}
 	temp.stdDev= sqrt(sum/numPoints);
 	
-	temp.id= id;
+	temp.id= intToString(id);
 	//cout<<temp.id<<", "<<temp.avHeight<<", "<<temp.stdDev<<endl;
 	return temp;
 }
@@ -297,7 +297,7 @@ PlantHeights findquantileDifference(int id, pclCluster *row,int percentage )
 	temp.stdDev= sqrt(sum/numPoints);
 
 	
-	temp.id= id;
+	temp.id= intToString(id);
 	//cout<<temp.id<<", "<<temp.avHeight<<", "<<temp.stdDev<<endl;
 	return temp;
 }
