@@ -205,8 +205,6 @@ void printTime(int seconds)
 */
 PlantHeights findHeight(int id, pclCluster *row )
 {
-    
-    string Id, iD,ID;
     PlantHeights temp;
 	float sum=0;
 	for(int i=0; i<row->cloud->points.size(); i++ )
@@ -223,15 +221,9 @@ PlantHeights findHeight(int id, pclCluster *row )
 		sum+= pow(row->cloud->points[i].z-temp.avHeight,2);
 	}
 	temp.stdDev= sqrt(sum/row->cloud->points.size());
-
-	id --;
-	
-	Id=intToString((id%8)+1);
-	iD=intToString((((int)id/8)%5)+1);
-	ID=intToString(((int)id/40)+1);
 	
 	
-	temp.id= Id+":"+ID+":"+iD;
+	temp.id= id;
 	//cout<<temp.id<<", "<<temp.avHeight<<", "<<temp.stdDev<<endl;
 	return temp;
 }
@@ -240,7 +232,6 @@ PlantHeights findHeight(int id, pclCluster *row )
 PlantHeights findquantileHeight(int id, pclCluster *row,int percentage )
 {
 	vector<float> heights;
-	string Id, iD,ID;
 	PlantHeights temp;
 	int numPoints =0;
 
@@ -265,15 +256,8 @@ PlantHeights findquantileHeight(int id, pclCluster *row,int percentage )
 		sum+= pow(heights[i]-temp.avHeight,2);
 	}
 	temp.stdDev= sqrt(sum/numPoints);
-
-	id --;
 	
-	Id=intToString((id%8)+1);
-	iD=intToString((((int)id/8)%5)+1);
-	ID=intToString(((int)id/40)+1);
-	
-	
-	temp.id= Id+":"+ID+":"+iD;
+	temp.id= id;
 	//cout<<temp.id<<", "<<temp.avHeight<<", "<<temp.stdDev<<endl;
 	return temp;
 }
@@ -287,7 +271,6 @@ PlantHeights findquantileHeight(int id, pclCluster *row,int percentage )
 PlantHeights findquantileDifference(int id, pclCluster *row,int percentage )
 {
 	vector<float> heights;
-	string Id, iD,ID;
 	PlantHeights temp;
 	int numPoints =0;
 
@@ -313,14 +296,8 @@ PlantHeights findquantileDifference(int id, pclCluster *row,int percentage )
 	}
 	temp.stdDev= sqrt(sum/numPoints);
 
-	id --;
 	
-	Id=intToString((id%8)+1);
-	iD=intToString((((int)id/8)%5)+1);
-	ID=intToString(((int)id/40)+1);
-	
-	
-	temp.id= Id+":"+ID+":"+iD;
+	temp.id= id;
 	//cout<<temp.id<<", "<<temp.avHeight<<", "<<temp.stdDev<<endl;
 	return temp;
 }
