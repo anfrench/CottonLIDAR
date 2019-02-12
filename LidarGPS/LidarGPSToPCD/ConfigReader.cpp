@@ -67,3 +67,12 @@ void ConfigReader::calcVals()
 
     if (mountingAngle < 0){mountingAngle += 360;}
 }
+
+void ConfigReader::makeEmptyConfigFile()
+{
+    std::ofStream newConfig;
+    newConfig.open("Config.txt");
+
+    newConfig<<"NotFinished....";
+
+}

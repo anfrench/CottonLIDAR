@@ -24,6 +24,7 @@ int main()
 	string line;
 	ifstream lidarFile;
 	GPSInterp gps;
+	ConfigReader *configuration;
 
 	try
 	{
@@ -51,7 +52,7 @@ int main()
 
 	try
 	{
-		ConfigReader configuration;
+		configuration = new(ConfigReader);
 		
 		gps.setOffsetDist(configuration.getMountingXYDist());
 		gps.setOffsetAngle(configuration.getMountingAngle());
@@ -60,10 +61,13 @@ int main()
 		builder.setRoll(configuration.getRoll());
 		builder.setPitch(configuration.getPitch()); //not acounted for (Does nothing)
 		builder.setYaw(configuration.getYaw()); //not acounted for (Does nothing)
+
+		delete(configuration);
 	}
 	catch(const char *e)
 	{
 
+		delete(configuration);
 	}
 
 	gps.setOffsetDist(1);
@@ -113,6 +117,7 @@ int main()
 		#if DBUG
 				cout <<"Processed a line"<<endl<<endl; 
 		#endif
+		
 		}
 		catch(const char * e)
 		{

@@ -32,4 +32,6 @@ class ConfigReader
     
     double getMountingAngle();
     double getMountingXYDist();
+
+    void makeEmptyConfigFile();
 };
