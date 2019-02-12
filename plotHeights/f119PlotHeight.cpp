@@ -90,27 +90,30 @@ int main()
 		
 			cluster->open(fileName);
 			cout<<fileName<<": Open!"<<endl;
-			cluster->translateZ(0);
 			center = cluster->center;
+
+			cluster->findSize();
+			pcl::PointXYZ minimum;
+			minimum.x=cluster->minX;
+			minimum.y=cluster->minY;
+			minimum.z=cluster->minZ;
+
+			cluster->translateX(0);
+			cluster->translateY(0);
+			cluster->findSize();
 			
 			//passing cloud to canopy to be procesed
 			canopy->setCloud(*cluster);
 			canopy->makeCanopy(canopyDencity);
 			cout<<"CanopyMade \n";
-			//Deleting origonal Cloud.
-			//delete(cluster);
-			cout<<"Canopy deleted";
+		
 			//Canopy is done and passes cloud back
 			*cluster=canopy->getCanopy();
 			canopy->emptyCanopy();
 			//delete(canopy);			
 			cout<<"Canopy Passed Back\n";
-			cluster->translateCenter(center.x,center.y,center.z);
-			//removing ground and setting new height to 0
-			cluster->crop("z", zHeight,zMin);
-			cluster->findSize();
-			cluster->translateZ(0);
-			//cluster->findSize();
+			cluster->translateX(minimum.x);
+			cluster->translateY(minimum.y);
 			cout<<"Canopy edited \n"<<endl;
 			
 			//creating croping variables
