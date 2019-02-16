@@ -13,7 +13,7 @@
 #if PROGRESS
 	int countLidarLines(std::string fineName);
 #endif
-
+void Error(ConfigReader *reader);
 
 using namespace std;
 
@@ -25,67 +25,46 @@ int main()
 	ifstream lidarFile;
 	GPSInterp gps;
 	ConfigReader *configuration;
-
-	int test = 3;
-
-	try
-	{
-		string gpsFileName, lidarFileName;
-
-		cout<<"Enter The GPS File Name: ";
-		getline(cin, gpsFileName);
-		cout<<"Enter The Lidar File Name: ";
-		getline(cin, lidarFileName);
-
-		gps.openFile(gpsFileName);
-		lidarFile.open(lidarFileName);
-		if(!lidarFile.is_open()){throw "Could NOT open Lidar File.";}
-	}
-	catch(const char * e)
-	{
-		cout<<e;
-		exit(EXIT_FAILURE);
-	}
-
 	PointCloudBuilder builder;
-	builder.setMin(445389.275375, 3656190.256213,1.7); //should be aded to configuration..probably...
 
 	try
 	{
 		string ConfigurationFileName;
 		cout<<"Enter The Configuration File Name: ";
 		getline(cin, ConfigurationFileName);
-		cout<<"What Would You Like To Save As? ";
-		getline(cin, outFileName);
 
 		configuration = new(ConfigReader);
 		configuration->read(ConfigurationFileName);
+
+		lidarFile.open(configuration->getLidarFileName());
+		gps.openFile(configuration->getGPSFileName());
+		outFileName=configuration->getOutputFileName();
+		if(!lidarFile.is_open()){throw "Could NOT open Lidar File.";}
 		
+
 		gps.setOffsetDist(configuration->getMountingXYDist());
 		gps.setOffsetAngle(configuration->getMountingAngle());
 		
+
 		builder.setMountingHeight(configuration->getMountingHeight());
 		builder.setRoll(configuration->getRoll());
-		builder.setPitch(configuration->getPitch()); //not acounted for (Does nothing)
-		builder.setYaw(configuration->getYaw()); //not acounted for (Does nothing)
+		builder.setPitch(configuration->getPitch());
+		builder.setYaw(configuration->getYaw()); 
+
+		builder.setBounds(configuration->getLowerBounds(),configuration->getUpperBounds());
+		builder.setShift(configuration->getShift());
 
 		delete(configuration);
 	}
 	catch(const char *e)
 	{
 		cout<<e<<endl;
-		cout<<"\tMaking Sample Config File.\n\n";
-		cout<<configuration->makeEmptyConfigFile();
-		delete(configuration);
-		exit(EXIT_FAILURE);
+		Error(configuration);
 	}
 	catch(...)
 	{
-		cout<<"Error Reading Configuration File...\n";
-		cout<<"\tMaking Sample Config File.\n";
-		cout<<configuration->makeEmptyConfigFile(); 
-		delete(configuration);
-		exit(EXIT_FAILURE);
+		cout<<"Not sure what went Wrong\n";
+		Error(configuration);
 	}
 
 	gps.setOffsetDist(1);  // dont remember what this is for... perhaps add to config
@@ -105,7 +84,7 @@ int main()
 		currentScan ++;
 		if(currentScan>currentStep)
 		{
-			std::cout<<"\t\t\tProgress: "<<currentScan/10000
+			std::cout<<"\tProgress: "<<currentScan/10000
 			<<" of "<<totalScans/10000<<endl;
 			currentStep += 10000;
 		}
@@ -175,3 +154,19 @@ int countLidarLines(std::string fileName)
 	return count;
 }
 #endif
+
+
+void Error(ConfigReader *reader)
+{
+	string answer;
+	cout<<"\tWould you like a sample configuration file to print? (y/n)";
+	getline(cin,answer);
+	if(answer.find("y") != string::npos ||answer.find("Y") != string::npos)
+	{
+		cout<<endl<<endl<<reader->makeEmptyConfigFile()<<endl<<endl;
+	}
+	delete(reader);
+
+
+	exit(EXIT_FAILURE);
+}
