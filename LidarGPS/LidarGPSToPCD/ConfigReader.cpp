@@ -1,4 +1,4 @@
-#include <ConfigReader.h>
+#include "ConfigReader.h"
 
 double ConfigReader::getMountingHeight(){return mountingHeight;}
 double ConfigReader::getXOffset(){return xOffset;}
@@ -11,11 +11,13 @@ double ConfigReader::getYaw(){return yaw;}
 double ConfigReader::getMountingAngle(){return mountingAngle;}
 double ConfigReader::getMountingXYDist(){return mountingXYDist;}
 
-ConfigReader::ConfigReader()
+ConfigReader::ConfigReader(){}
+
+void ConfigReader::read(std::string configFileName)
 {
-    configFile.open("Config.txt");
+    configFile.open(configFileName);
     if(!configFile.is_open())
-        {throw"could not find configuation";}
+        {throw"Could not find configuation File: ";}
     
     std::string skip;
     getline(configFile, skip);
@@ -31,7 +33,6 @@ ConfigReader::ConfigReader()
     configFile.close();
 
     calcVals();
-
 }
 
 std::string ConfigReader::removeSpace(std::string str)
@@ -68,11 +69,21 @@ void ConfigReader::calcVals()
     if (mountingAngle < 0){mountingAngle += 360;}
 }
 
-void ConfigReader::makeEmptyConfigFile()
+std::string ConfigReader::makeEmptyConfigFile()
 {
-    std::ofStream newConfig;
-    newConfig.open("Config.txt");
 
-    newConfig<<"NotFinished....";
+    std::string sample;
+    sample = "Paste The Fallowing into a file. \n\n\n";
+    sample+="Config File For Run #( ##) Field(##) (MM/DD/YYY) :~~\n";
+    sample+="Mounting Height: x.xx\n";
+    sample+="X offset: x.xx\n";
+    sample+="Y offset: x.xx\n";
+    sample+="Z offset: x.xx\n";
+    sample+="Roll: x.xx\n";
+    sample+="pitch: x.xx\n";
+    sample+="yaw: x.xx\n";
+    sample+="Lidar Unit:(sumeUnit1,SomeUnit2,SomeUnit3)\n\n\n";
+
+    return sample;
 
 }

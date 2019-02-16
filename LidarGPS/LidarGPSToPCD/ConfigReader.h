@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <fstream>
 #include <cmath>
@@ -22,6 +24,8 @@ class ConfigReader
     public:
     ConfigReader();
 
+    void read(std::string configFileName);
+
     double getMountingHeight();
     double getXOffset();
     double getYOffset();
@@ -33,5 +37,5 @@ class ConfigReader
     double getMountingAngle();
     double getMountingXYDist();
 
-    void makeEmptyConfigFile();
+    std::string makeEmptyConfigFile();
 };
