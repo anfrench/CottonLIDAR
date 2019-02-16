@@ -7,10 +7,19 @@ void PointCloudBuilder::setYaw(double yawIN){yaw=yawIN;}
 
 PointCloudBuilder::PointCloudBuilder()
 {
-    adjust = false;
-    minPoint.x = 0;
-    minPoint.y=0;
-    minPoint.z = 0;
+    noBounds = true;
+    shiftValue.x=0;
+    shiftValue.y=0; 
+    shiftValue.z=0;
+
+    boundMax.x=0;
+    boundMax.y=0;
+    boundMax.z=0;
+
+    boundMin.x=0;
+    boundMin.y=0;
+    boundMin.z=0;
+
     cloud.open("tempFile.txt");
 }
 
@@ -23,14 +32,17 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
     {
         double dist = ((double)distance[i]) /(1000*scale);
         
-        if(dist>0.4 && dist<80)
+        if(dist>0.4 && dist<80) // with updates to code I may want to remove this if
         {
             Point p;
-            p.y=std::sin(pitch)*dist;
-            dist=std::cos(pitch)*dist;
+            p.y=0;
             p.x= std::cos(angle) * dist;
             p.z = std::sin(angle) * dist;
-            if(p.z>.7)
+
+            p.y= std::sin(pitch) * p.z;//adjusting for pitch
+            p.z = std::cos(pitch) * p.z;
+
+            if(p.z>.7) // may also want to remove this if (tests need to be run)
             {
                 p.z *= -1;
                 p.z += mountingHeight;
@@ -42,6 +54,9 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
     }
 }
 
+/*
+    Makes the row face the heading + yaw
+*/
 void PointCloudBuilder::rotateRow(double heading)
 {
     heading=toRad(heading, 360);
@@ -56,6 +71,12 @@ void PointCloudBuilder::rotateRow(double heading)
     }
 }
 
+/*
+    works on the workingRow.
+
+    Adds gps northing and easting. Decides if point is out of range.
+    if not adds shift values, and puts the point in temp file.
+*/
 void PointCloudBuilder::placeRow(double northing, double easting)
 {
     while(!workingRow.empty())
@@ -65,9 +86,15 @@ void PointCloudBuilder::placeRow(double northing, double easting)
         p.x+=easting;
         p.y+=northing;
 
-        cloud << std::fixed << std::showpoint;
-        cloud << std::setprecision(6);
-        cloud<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
+        if(noBounds || inBounds(p))
+        {
+            p.x+=shiftValue.x;
+            p.y+=shiftValue.y;
+
+            cloud << std::fixed << std::showpoint;
+            cloud << std::setprecision(6);
+            cloud<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
+        }
 
         numberofPoints++;
     }
@@ -118,53 +145,54 @@ void PointCloudBuilder::writeFile(std::string fileName)
     PCDFile<<"VIEWPOINT 0 0 0 1 0 0 0"<<std::endl;
     PCDFile<<"POINTS "<<numberofPoints<<std::endl;
     PCDFile<<"DATA ascii"<<std::endl;
+    
     int flush = 100000;
     for(int i=0; i<numberofPoints; i++)
     {
-        Point p;
         getline(points,pointLine);
-        
-        if(adjust)
-        {
-            p=readPointString(pointLine);
-            adjustPoint(&p);
-            PCDFile<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
-        }
-        else{PCDFile<<pointLine;}
+        PCDFile<<pointLine;
 
        if(i>flush)
        {
            PCDFile.flush();
            flush+=100000;
+        #if PROGRESS
            std::cout<<i/100000<<" of "<<numberofPoints/100000<<std::endl;
+        #endif
        }
     }
+
     points.close();
     PCDFile.flush();
     PCDFile.close();
 }
 
-void PointCloudBuilder::adjustPoint(Point *p)
+void PointCloudBuilder::setShift(Point shiftIN)
 {
-    p->x -= minPoint.x;
-    p->y -= minPoint.y;
-    //p->z*= -1;
-   // p->z += minPoint.z;
-    
+    shiftValue.x=shiftIN.x;
+    shiftValue.y=shiftIN.y;
+    shiftValue.z=0;
 }
 
-void PointCloudBuilder::updateMin(Point p)
+void PointCloudBuilder::setBounds(Point lower, Point upper)
 {
-    if(p.x<minPoint.x){minPoint.x = p.x;}
-    if(p.y<minPoint.y){minPoint.y = p.y;}
-    if(p.z<minPoint.z){minPoint.z = p.z;}
+    boundMax=upper;
+    boundMin=lower;
+
+    double sum=0;
+
+    sum+=upper.x+upper.y+upper.z;
+    sum+=lower.x+lower.y+lower.z;
+
+    if(sum!=0){noBounds=false;}
+
 }
 
-void PointCloudBuilder::setMin(int x, int y, int z)
+bool PointCloudBuilder::inBounds(Point p)
 {
-    minPoint.x = x;
-    minPoint.y = y;
-    minPoint.z = z;
+    return boundMin.x<p.x && p.x<boundMax.x
+            && boundMin.y<p.y && p.y<boundMax.y
+            && boundMin.z<p.z && p.z<boundMax.z;
 }
 
 Point PointCloudBuilder::readPointString(std::string pointString)
