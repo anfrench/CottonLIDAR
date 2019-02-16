@@ -38,6 +38,7 @@ class PointCloudBuilder
 
   double toRad(double angle, int steps);
   double toDegree(double angle, int steps);
+  double findXYDist(Point p);
 
   void writeFile(std::string fileName);
   void setMin(int x, int y, int z);

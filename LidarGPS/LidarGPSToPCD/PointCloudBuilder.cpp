@@ -18,7 +18,7 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
 {
     angle = toRad(angle, 360);
     stepAngle = toRad(stepAngle, 360);
-    stepAngle += roll;
+    angle += roll;
     for(int i=0; i<distance.size(); i++)
     {
         double dist = ((double)distance[i]) /(1000*scale);
@@ -26,7 +26,8 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
         if(dist>0.4 && dist<80)
         {
             Point p;
-            p.y=0;
+            p.y=std::sin(pitch)*dist;
+            dist=std::cos(pitch)*dist;
             p.x= std::cos(angle) * dist;
             p.z = std::sin(angle) * dist;
             if(p.z>.7)
@@ -43,12 +44,14 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
 
 void PointCloudBuilder::rotateRow(double heading)
 {
-    heading = toRad(heading, 360);
+    heading=toRad(heading, 360);
+    heading+=yaw;  // could go over 360... Though shouldn't matter
     for(int i=0; i<workingRow.size(); i++)
     {
         Point p = workingRow[i];
-        p.y= p.x * sin(heading);
-        p.x = p.x * cos(heading);
+        double xyDist=findXYDist(p);
+        p.y=xyDist * sin(heading); 
+        p.x =xyDist * cos(heading);
         workingRow[i] = p;
     }
 }
@@ -67,7 +70,6 @@ void PointCloudBuilder::placeRow(double northing, double easting)
         cloud<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
 
         numberofPoints++;
-        //updateMin(p);
     }
     cloud.flush();
 }
@@ -80,6 +82,16 @@ double PointCloudBuilder::toRad(double angle, int steps)
 double PointCloudBuilder::toDegree(double angle, int steps)
 {
 	return (steps / 2 ) * angle / PI;
+}
+
+double PointCloudBuilder::findXYDist(Point p)
+{
+    double distance=0;
+
+    distance=(p.x*p.x) + (p.y*p.y);
+    distance=std::sqrt(distance);
+
+    return distance;
 }
 
 void PointCloudBuilder::writeFile(std::string fileName)
