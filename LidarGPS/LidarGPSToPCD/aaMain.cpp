@@ -136,7 +136,6 @@ int main()
 		}
 	}
 
-	
 	builder.writeFile(outFileName);
 
 	return 0;
