@@ -61,9 +61,10 @@ int main(int argc, char*argv[])
 			}
 		
 			*cluster=canopy->getCanopy();
+
 			////////testImplementation
 			
-			vector<double> xyPoints, zPoints;
+			/*vector<double> xyPoints, zPoints;
 			for(int i=0; i<cluster->cloud->points.size(); i++)
 			{
 				xyPoints.push_back(cluster->cloud->points[i].x);
@@ -93,6 +94,7 @@ int main(int argc, char*argv[])
 			pollyFit->cloud->height =1;
 			pollyFit->cloud->is_dense=true;
 			pollyFit->save("PollyFit.pcd");
+*/
 			//////////////
 
 			
@@ -100,9 +102,6 @@ int main(int argc, char*argv[])
 			else{fileName= "Canopy_"+fileName;}
 			cluster->save(fileName);
 			
-			
-			//writeToFile(*cluster);			
-
 			cout<<"sucsess! ";
 			end=time(NULL);
 			seconds = difftime(end, timePer);

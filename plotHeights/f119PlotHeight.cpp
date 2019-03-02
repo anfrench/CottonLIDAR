@@ -93,6 +93,7 @@ int main()
 			canopy->setCloud(*cluster);
 			canopy->makeCanopy(canopyDencity);
 			cout<<"CanopyMade \n";
+
 			//Canopy is done and passes cloud back
 			*cluster=canopy->getCanopy();
 			canopy->emptyCanopy();
@@ -100,6 +101,7 @@ int main()
 			cout<<"Canopy Passed Back\n";
 			cluster->findSize();
 			//cluster->findSize();
+
 			cout<<"Canopy edited \n"<<endl;
 			
 			//creating croping variables

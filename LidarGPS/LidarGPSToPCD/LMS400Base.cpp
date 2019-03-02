@@ -8,6 +8,7 @@ void LMS400Scan::decodeData(){}
 vector<int> LMS400Scan::getRemisValues(){vector<int> vec; return vec;}
 vector<int> LMS400Scan::getDistValues()	{vector<int> vec; return vec;}
 void LMS400Scan::partition(){}
+double LMS400Scan::getScaler(){double x=1; return x;}
 
 //defined in base class
 //Constructors
