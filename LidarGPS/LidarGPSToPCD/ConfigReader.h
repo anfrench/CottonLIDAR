@@ -11,7 +11,7 @@ class ConfigReader
     private:
     std::ifstream configFile;
 
-    std::string lidarFileName, GPSFileName, outputFileName;
+    std::string lidarFileName, lidarName, GPSFileName, outputFileName;
 
     Point shift, boundMax, boundMin;
 
@@ -22,10 +22,14 @@ class ConfigReader
     double mountingAngle;
     double mountingXYDist;
 
+    int lidarType;
+
     protected:
     std::string removeAndTrim(std::string str);
     double getValue();
     void calcVals();
+
+    void setLidarType();
 
     public:
     ConfigReader();
@@ -50,6 +54,8 @@ class ConfigReader
     
     double getMountingAngle();
     double getMountingXYDist();
+
+    int getLidarType();
 
     std::string makeEmptyConfigFile();
 };

@@ -14,6 +14,7 @@
 	int countLidarLines(std::string fineName);
 #endif
 void Error(ConfigReader *reader);
+void getLidar(int lidarType, LMS400Scan *lidar);
 
 using namespace std;
 
@@ -26,6 +27,8 @@ int main()
 	GPSInterp gps;
 	ConfigReader *configuration;
 	PointCloudBuilder builder;
+	LMS400Scan* lidar; // All curent lidar classes are built from this base class
+	int lidarType=0;  //  used to set the lidar pointer
 
 	try
 	{
@@ -37,6 +40,8 @@ int main()
 		configuration->read(ConfigurationFileName);
 
 		lidarFile.open(configuration->getLidarFileName());
+		lidarType=configuration->getLidarType();
+
 		gps.openFile(configuration->getGPSFileName());
 		outFileName=configuration->getOutputFileName();
 		if(!lidarFile.is_open()){throw "Could NOT open Lidar File.";}
@@ -53,6 +58,7 @@ int main()
 
 		builder.setBounds(configuration->getLowerBounds(),configuration->getUpperBounds());
 		builder.setShift(configuration->getShift());
+
 
 		delete(configuration);
 	}
@@ -102,13 +108,13 @@ int main()
 				cout <<"Updated/recived GPS"<<endl; 
 		#endif
 
-		LMS511Scan lidar;
-		lidar.setScan(line);
-		lidar.decode();
+		getLidar(lidarType,lidar);
+		lidar->setScan(line);
+		lidar->decode();
 		#if DBUG
 				cout <<"Decoded Lidar"<<endl; 
 		#endif
-		builder.addPoints(lidar.getDistValues(),lidar.getStartAngle(), lidar.getAngularStep(), lidar.getScaler());
+		builder.addPoints(lidar->getDistValues(),lidar->getStartAngle(), lidar->getAngularStep(), lidar->getScaler());
 		builder.rotateRow(location.getHeading());
 		builder.placeRow(location.getNorthing(), location.getEasting());
 		#if DBUG
@@ -168,4 +174,22 @@ void Error(ConfigReader *reader)
 
 
 	exit(EXIT_FAILURE);
+}
+
+
+void getLidar(int lidarType, LMS400Scan *lidar)
+{
+	if(lidar!=NULL)
+	{
+		delete(lidar);
+	}
+
+	switch(lidarType)
+	{
+		case 0:
+			lidar= new(LMS511Scan);
+			break;
+		case 1:
+		break;
+	}
 }

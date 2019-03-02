@@ -76,6 +76,9 @@ class LMS400Scan
 	// not defined in this class
 	virtual vector<int> getRemisValues();
 	virtual vector<int> getDistValues();
+
+	virtual double getScaler();
+
 };
 
 

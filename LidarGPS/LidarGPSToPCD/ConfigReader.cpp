@@ -20,6 +20,8 @@ Point ConfigReader::getShift(){return shift;}
 double ConfigReader::getMountingAngle(){return mountingAngle;}
 double ConfigReader::getMountingXYDist(){return mountingXYDist;}
 
+int ConfigReader::getLidarType(){return lidarType;}
+
 ConfigReader::ConfigReader(){}
 
 void ConfigReader::read(std::string configFileName)
@@ -64,10 +66,9 @@ void ConfigReader::read(std::string configFileName)
     shift.y=getValue();
 
     getline(configFile, skip);
-    /*
-        todo 
-        need code here to detect what kind of lidar unit is being used.
-    */
+    
+    getline(configFile, lidarName);
+    setLidarType();
 
     configFile.close();
 
@@ -107,6 +108,23 @@ void ConfigReader::calcVals()
     if (mountingAngle < 0){mountingAngle += 360;}
 }
 
+void ConfigReader::setLidarType()
+{
+    lidarType=0;
+    if(lidarName.find("LMS511") != std::string::npos)
+    {
+        lidarType=0;
+    }
+    else if(lidarName.find("LMS4000Distance") != std::string::npos)
+    {
+        lidarType=1;
+    }
+    else if(lidarName.find("LMS4000DistanceAndRemessions") != std::string::npos)
+    {
+        lidarType=2;
+    }
+}
+
 std::string ConfigReader::makeEmptyConfigFile()
 {
 
@@ -131,7 +149,7 @@ std::string ConfigReader::makeEmptyConfigFile()
     sample+="Lower Bounds Z: 0.0\n\n";
     sample+="Shift X: 0.0\n";
     sample+="Shift Y: 0.0\n\n";
-    sample+="Lidar Unit:(sumeUnit1,SomeUnit2,SomeUnit3)\n\n\n";
+    sample+="Lidar Unit:(LMS511,LMS4000Distance,LMS4000DistanceAndRemessions)\n\n\n";
 
     return sample;
 
