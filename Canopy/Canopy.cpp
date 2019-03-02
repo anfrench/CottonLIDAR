@@ -48,7 +48,7 @@ int main()
 			canopy->makeCanopy(canopyRatio);
 			*cluster=canopy->getCanopy();
 			cluster->findSize();
-			cluster->crop("z", 5, -1);
+			cluster->crop("z", 5000, -1);
 			writeToFile(*cluster);			
 
 			cout<<"sucsess! ";
