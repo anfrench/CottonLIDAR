@@ -79,8 +79,6 @@ int main()
 		cout<<"Working on: "<<fileName<<endl;
 		try
 		{
-			pcl::PointXYZ center;
-
 			//Initalizing all classes with point cloud pointers
 			pclCluster *cluster= new pclCluster();
 			pclCluster *row= new pclCluster();
@@ -90,26 +88,17 @@ int main()
 		
 			cluster->open(fileName);
 			cout<<fileName<<": Open!"<<endl;
-			cluster->translateZ(0);
-			center = cluster->center;
 			
 			//passing cloud to canopy to be procesed
 			canopy->setCloud(*cluster);
 			canopy->makeCanopy(canopyDencity);
 			cout<<"CanopyMade \n";
-			//Deleting origonal Cloud.
-			//delete(cluster);
-			cout<<"Canopy deleted";
 			//Canopy is done and passes cloud back
 			*cluster=canopy->getCanopy();
 			canopy->emptyCanopy();
 			//delete(canopy);			
 			cout<<"Canopy Passed Back\n";
-			cluster->translateCenter(center.x,center.y,center.z);
-			//removing ground and setting new height to 0
-			cluster->crop("z", zHeight,zMin);
 			cluster->findSize();
-			cluster->translateZ(0);
 			//cluster->findSize();
 			cout<<"Canopy edited \n"<<endl;
 			

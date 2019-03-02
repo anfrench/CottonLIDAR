@@ -5,9 +5,10 @@
 #include <pcl/features/normal_3d.h>
 #include <pcl/surface/gp3.h>
 #include <pcl/io/vtk_io.h>
+#include "PollyFit/Polynomial.hh"
 
 
-
+// canopy
 using namespace std;
 
 string fileName;
@@ -15,8 +16,16 @@ void printTime(int seconds);
 void writeToFile(pclCluster clusterCanopy);
 void writeHeader(FILE *file, string ID);
 
-int main()
+
+int main(int argc, char*argv[])
 {
+	bool makeFloor=false;
+	if(argc>= 2 && 0==strcmp(argv[1], "floor"))
+	{
+		makeFloor=true;
+		cout<<"Making Floor\n";
+	}
+
 	//variables used for timeStamps
 	time_t timeTotal, timePer, end;
 	timeTotal=time(NULL);
@@ -40,16 +49,59 @@ int main()
 		{
 			
 			cluster->open(fileName);
-			cluster->findSize();
-			cluster->translateX(0);
-			cluster->translateY(0);
-			cluster->findSize();
+
 			canopy->setCloud(*cluster);
-			canopy->makeCanopy(canopyRatio);
+			if(makeFloor)
+			{
+				canopy->makeFloor(canopyRatio);
+			}
+			else
+			{
+			 	canopy->makeCanopy(canopyRatio);
+			}
+		
 			*cluster=canopy->getCanopy();
-			cluster->findSize();
-			cluster->crop("z", 5, -1);
-			writeToFile(*cluster);			
+			////////testImplementation
+			
+			vector<double> xyPoints, zPoints;
+			for(int i=0; i<cluster->cloud->points.size(); i++)
+			{
+				xyPoints.push_back(cluster->cloud->points[i].x);
+				xyPoints.push_back(cluster->cloud->points[i].y);
+				
+				zPoints.push_back(cluster->cloud->points[i].z);
+				
+			}
+			
+			Polynomial *polly = new Polynomial(xyPoints,zPoints,2,3 );
+			
+			pclCluster *pollyFit= new pclCluster();
+			for(double i=0; i<150; i+=.001)
+			{
+				vector<double> xy;
+				xy.push_back(i);
+				xy.push_back(i);
+				double z=0;// = polly->eval(xy);
+				pcl::PointXYZ point;
+				point.x=i;
+				point.y=i;
+				point.z=z;
+				pollyFit->cloud->points.push_back(point);
+			}
+			
+			pollyFit->cloud->width = pollyFit->cloud->points.size();
+			pollyFit->cloud->height =1;
+			pollyFit->cloud->is_dense=true;
+			pollyFit->save("PollyFit.pcd");
+			//////////////
+
+			
+			if(makeFloor){fileName= "Floor_"+fileName;}
+			else{fileName= "Canopy_"+fileName;}
+			cluster->save(fileName);
+			
+			
+			//writeToFile(*cluster);			
 
 			cout<<"sucsess! ";
 			end=time(NULL);

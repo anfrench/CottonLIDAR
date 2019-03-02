@@ -9,6 +9,6 @@ link_directories( ${PCL_LIBRARY_DIRS})
 add_definitions( ${PCL_DEFINITIONS})
 
 add_executable (Canopy Canopy.cpp)
-target_link_libraries (Canopy ${PCL_LIBRARIES} )
+target_link_libraries (Canopy ${PCL_LIBRARIES})
 
 #target_link_libraries (Canopy)

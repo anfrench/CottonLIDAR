@@ -17,43 +17,29 @@ int main()
 	pclCluster cluster;
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
 	
-	int pointNumb=100000;
-	float diam=.3, length = 3, ringDen=1;
-	/*
-	cout<<"Number of points:  ";
-	cin>>pointNumb;
-	cout<<"diamiter:  ";
-	cin>>diam;
-	cout<<"length:  ";
-	cin>>length;
-	*/
-	cout<<"ring Dencity:  ";
-	cin>>ringDen;
+	string input="";
 	
-	cloud = makeBranch(diam,length,ringDen ,pointNumb);
-	//cloud = makeCircle(.3, 100);
+	vector<double> bounds;
+	
+	
+	while(input.find("#")==string::npos)
+	{
+		getline(cin,input);
+		// need to push back something....double temp=atod
+	}
+	
+	
+	for(int i=0; i<=150; i+=10)
+	{
+		bounds.push_back(i);
+	}
+	
+	cloud=makeStepPlane(bounds,5);
 
-	for(int i=0; i<100; i++){cloud->points[i].z += 2;}
-	/*
-	cluster.cloud = cloud;
-	cluster.findSize();
-	cout<<"Points"<<cluster.cloud->points.size() <<endl;
-	cout<<"Max x :"<<cluster.maxX <<endl;	
-	cout<<"Max y :"<<cluster.maxY <<endl;
-	cout<<"Max z :"<<cluster.maxZ <<endl;
-	cout<<"Min x :"<<cluster.minX <<endl;
-	cout<<"Min y :"<<cluster.minY <<endl;
-	cout<<"Min z :"<<cluster.minZ <<endl;
-	
-	cout<<"Width :"<<cluster.width <<endl;
-	cout<<"Height:"<<cluster.height <<endl;
-	cout<<"length:"<<cluster.length <<endl;
-	*/
-	pcl::io::savePCDFileASCII("Branch.pcd", *cloud);
+	pcl::io::savePCDFileASCII("field.pcd", *cloud);
 	
 	return 0;	
 }
-
 
 
 
