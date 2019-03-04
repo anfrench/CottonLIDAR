@@ -5,7 +5,7 @@
 #include <pcl/features/normal_3d.h>
 #include <pcl/surface/gp3.h>
 #include <pcl/io/vtk_io.h>
-#include "PollyFit/Polynomial.hh"
+//#include "PollyFit/Polynomial.hh"
 
 
 // canopy
@@ -50,62 +50,27 @@ int main(int argc, char*argv[])
 			
 			cluster->open(fileName);
 
+			pclCluster canop,ground,heights;
+			
 			canopy->setCloud(*cluster);
-			if(makeFloor)
-			{
-				canopy->makeFloor(canopyRatio);
-			}
-			else
-			{
-			 	canopy->makeCanopy(canopyRatio);
-			}
-		
-			*cluster=canopy->getCanopy();
+			
+			canopy->makeCanopy(canopyRatio);
+			canopy->makeGround(canopyRatio);
+			canopy->makeHeights(canopyRatio);
+			
+			canop=canopy->getCanopy();
+			ground=canopy->getGround();
+			heights=canopy->getHeights();
 
-			////////testImplementation
-			
-			/*vector<double> xyPoints, zPoints;
-			for(int i=0; i<cluster->cloud->points.size(); i++)
-			{
-				xyPoints.push_back(cluster->cloud->points[i].x);
-				xyPoints.push_back(cluster->cloud->points[i].y);
-				
-				zPoints.push_back(cluster->cloud->points[i].z);
-				
-			}
-			
-			Polynomial *polly = new Polynomial(xyPoints,zPoints,2,3 );
-			
-			pclCluster *pollyFit= new pclCluster();
-			for(double i=0; i<150; i+=.001)
-			{
-				vector<double> xy;
-				xy.push_back(i);
-				xy.push_back(i);
-				double z=0;// = polly->eval(xy);
-				pcl::PointXYZ point;
-				point.x=i;
-				point.y=i;
-				point.z=z;
-				pollyFit->cloud->points.push_back(point);
-			}
-			
-			pollyFit->cloud->width = pollyFit->cloud->points.size();
-			pollyFit->cloud->height =1;
-			pollyFit->cloud->is_dense=true;
-			pollyFit->save("PollyFit.pcd");
-*/
-			//////////////
-
-			
-			if(makeFloor){fileName= "Floor_"+fileName;}
-			else{fileName= "Canopy_"+fileName;}
-			cluster->save(fileName);
+			canop.save("Canopy"+fileName);
+			ground.save("Ground"+fileName);
+			heights.save("Heights"+fileName);	
 			
 			cout<<"sucsess! ";
 			end=time(NULL);
 			seconds = difftime(end, timePer);
 			printTime(seconds);
+			
 		}
 		catch(...){cout<<"ERROR: "<<fileName<<endl;}
 	}
@@ -130,9 +95,6 @@ void printTime(int seconds)
 	
 }
 
-
-
-
 void writeToFile(pclCluster clusterCanopy)
 {
 	string nFileName;
@@ -150,9 +112,6 @@ void writeToFile(pclCluster clusterCanopy)
 	}
 	fclose(outFile);
 }
-
-
-
 
 void writeHeader(FILE *file, string ID)
 {
