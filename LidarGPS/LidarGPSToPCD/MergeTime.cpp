@@ -22,6 +22,8 @@ void MergeTime::decode()
 
 void MergeTime::decodeLidarTime()
 {
+	try
+	{
 	string temp, token[6];
 	temp = stamp.substr(stamp.find("-")+1);
 
@@ -49,7 +51,11 @@ void MergeTime::decodeLidarTime()
 	minute= stoi(token[3]);
 	second= stoi(token[4]);
 	fractionalSecond = stof(token[5])/ 1000;
-
+	}
+	catch(...)
+	{
+		throw "out of bounds";
+	}
 }
 	
 void MergeTime::decodeGPSTime()
@@ -83,6 +89,32 @@ void MergeTime::timeToDouble()
 	time += (double) hour *3600;
 }
 
+
+string MergeTime::cutBack(string str, string cutPoint, int offset)
+{
+	if(str.find(cutPoint)!=string::npos && str.find(cutPoint)<str.size())
+	{
+		return str.substr(str.find(cutPoint)+offset);
+	}
+	else
+	{
+		throw "String Index Error";
+	}
+	
+}
+
+string MergeTime::cutFront(string str, string cutPoint, int offset)
+{
+	if(str.find(cutPoint)!=string::npos && str.find(cutPoint)<str.size())
+	{
+		return str.substr(0,str.find(cutPoint)+offset);
+	}
+	else
+	{
+		throw "String Index Error";
+	}
+	
+}
 
 double MergeTime::getTime(){return time;}
 

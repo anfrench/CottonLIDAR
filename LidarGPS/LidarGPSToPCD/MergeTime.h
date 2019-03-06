@@ -30,5 +30,7 @@ class MergeTime
 	bool equal(MergeTime time);	
 	
 	string toString();
+	string cutBack(string str, string cutPoint, int offsetz);
+	string cutFront(string str, string cutPoint, int offsetz);
 };
 

@@ -14,7 +14,7 @@
 	int countLidarLines(std::string fineName);
 #endif
 void Error(ConfigReader *reader);
-void getLidar(int lidarType, LMS400Scan *lidar);
+LMS400Scan* getLidar(int lidarType, LMS400Scan *lidar);
 
 using namespace std;
 
@@ -29,6 +29,8 @@ int main()
 	PointCloudBuilder builder;
 	LMS400Scan* lidar; // All curent lidar classes are built from this base class
 	int lidarType=0;  //  used to set the lidar pointer
+
+	lidar=new(LMS400Scan);//I don't know why... but it crashes with out this.
 
 	try
 	{
@@ -101,14 +103,13 @@ int main()
 		#if DBUG
 				cout <<"Found time stamp"<<endl; 
 		#endif
-
+	
 		ModGPS location;
 		location = gps.getLocation(transmitionTime.getTime());
 		#if DBUG
 				cout <<"Updated/recived GPS"<<endl; 
 		#endif
-
-		getLidar(lidarType,lidar);
+		lidar=getLidar(lidarType,lidar);
 		lidar->setScan(line);
 		lidar->decode();
 		#if DBUG
@@ -177,7 +178,7 @@ void Error(ConfigReader *reader)
 }
 
 
-void getLidar(int lidarType, LMS400Scan *lidar)
+LMS400Scan* getLidar(int lidarType, LMS400Scan *lidar)
 {
 	if(lidar!=NULL)
 	{
@@ -187,9 +188,9 @@ void getLidar(int lidarType, LMS400Scan *lidar)
 	switch(lidarType)
 	{
 		case 0:
-			lidar= new(LMS511Scan);
-			break;
+			return new(LMS511Scan);
 		case 1:
 		break;
 	}
+	return new(LMS511Scan);
 }
