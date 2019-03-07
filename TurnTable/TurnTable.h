@@ -12,6 +12,7 @@ class Point
 {
 	public:
 	double x,y,z;
+	float remission;
 	Point();
 };
 

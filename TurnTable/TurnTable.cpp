@@ -209,10 +209,11 @@ vector<Point> TurnTable::calculateScan(LMS400Scan *scan)
 {
 	double angle, stepVal;
 	vector<Point> scanPoints;
-	vector<int> distVals;
+	vector<int> distVals, remissVals;
 	
 	scan->decode();
 	distVals = scan->getDistValues();
+	remissVals=scan->getRemisValues();
 	angle = toRad((double)scan->getStartAngle()/10000, 360);
 	angle += pitch;
 	stepVal = toRad((double)scan->getAngularStep()/10000,360);
@@ -220,6 +221,10 @@ vector<Point> TurnTable::calculateScan(LMS400Scan *scan)
 	for(int i=0; i<distVals.size(); i++)
 	{
 		scanPoints.push_back(calculatePoint(distVals[i], angle));
+		if(i<remissVals.size()){
+			scanPoints[i].remission=remissVals[i];
+		}
+		else{scanPoints[i].remission=0;}
 		angle -= stepVal;
 	}
 	
