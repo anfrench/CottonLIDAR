@@ -22,11 +22,11 @@ int main()
 	vector<double> bounds;
 	
 	
-	while(input.find("#")==string::npos)
+	/*while(input.find("#")==string::npos)
 	{
 		getline(cin,input);
 		// need to push back something....double temp=atod
-	}
+	}*/
 	
 	
 	for(int i=0; i<=150; i+=10)
@@ -34,7 +34,7 @@ int main()
 		bounds.push_back(i);
 	}
 	
-	cloud=makeStepPlane(bounds,5);
+	cloud=makePlane(0, 0, 150, 150, 0, 4);
 
 	pcl::io::savePCDFileASCII("field.pcd", *cloud);
 	
