@@ -16,7 +16,6 @@
 
 using namespace std;
 
-
 /*
 	Class
 	Public:
@@ -29,35 +28,29 @@ struct PlantHeights
 {
 	public:
 	string id;
-	float avHeight;
-	float stdDev;
+	double avHeight;
+	double stdDev;
 	
 };
 void printTime(int seconds);
 PlantHeights findHeight(int id, pclCluster *row );
 PlantHeights findquantileHeight(int id, pclCluster *row,int percentage );
-PlantHeights findquantileDifference(int id, pclCluster *row,int percentage );
-void utcScanner(string line, int *id, string* dim1, float*high1,float*low1,string* dim2, float*high2,float*low2);
-float string2Float(string in);
+void utcScanner(string line, int *id, string* dim1, double*high1,double*low1,string* dim2, double*high2,double*low2);
+double string2double(string in);
 string intToString(int in);
 
+vector<double> findAverage(vector<double> data);
 
 int main()
 {
-	float zHeight=10, zMin=-5;
 	int canopyDencity;
 	vector<PlantHeights> heights;
 	vector<PlantHeights> quantileHeights;
-	vector<PlantHeights> quantileDifference;//need to impliment this.
 	//variables used for timeStamps
 	time_t timeTotal, timePer, end;
 	timeTotal=time(NULL);
 	int seconds;
 
-	cout<<"Float Enter Maximum Height: ";	
-	cin>> zHeight;
-	cout<<"Float Enter Minimum Height: ";	
-	cin>> zMin;
 	cout<<"Int Enter Canopy Dencity (5-10 recomended): ";
 	cin>> canopyDencity;
 		
@@ -92,10 +85,12 @@ int main()
 			//passing cloud to canopy to be procesed
 			canopy->setCloud(*cluster);
 			canopy->makeCanopy(canopyDencity);
+			canopy->makeGround(canopyDencity);
+			canopy->makeHeights(canopyDencity);
 			cout<<"CanopyMade \n";
 
 			//Canopy is done and passes cloud back
-			*cluster=canopy->getCanopy();
+			*cluster=canopy->getHeights();
 			canopy->emptyCanopy();
 			//delete(canopy);			
 			cout<<"Canopy Passed Back\n";
@@ -107,7 +102,7 @@ int main()
 			//creating croping variables
 			int id;
 			string dim1, dim2,bound;
-			float high1,high2, low1, low2;	
+			double high1,high2, low1, low2;	
 			
 			//Opening file where row bounds for f119 are kept
 			fstream bounds;
@@ -197,34 +192,34 @@ void printTime(int seconds)
 PlantHeights findHeight(int id, pclCluster *row )
 {
     PlantHeights temp;
-	float sum=0;
+	double average =0, count=1;
+	vector<double> data;
+	cout<<"--------------"<<endl;
 	for(int i=0; i<row->cloud->points.size(); i++ )
 	{
-		sum += row->cloud->points[i].z/row->cloud->points.size();
+		cout<<row->cloud->points[i].z<<endl;
+		data.push_back(row->cloud->points[i].z);
 	}
 	
-	temp.avHeight= sum;//row->cloud->points.size();
+	temp.avHeight= findAverage(data)[0];
 	
-	sum = 0;
 	
-	for(int i=0; i<row->cloud->points.size(); i++ )
+	for(int i=0; i<data.size(); i++ )
 	{
-		sum+= pow(row->cloud->points[i].z-temp.avHeight,2);
+		data[i]=pow(data[i]-temp.avHeight,2);
 	}
-	temp.stdDev= sqrt(sum/row->cloud->points.size());
 	
+	temp.stdDev= sqrt(findAverage(data)[0]);
 	
 	temp.id= intToString(id);
-	//cout<<temp.id<<", "<<temp.avHeight<<", "<<temp.stdDev<<endl;
 	return temp;
 }
 
 ///working on this method.
 PlantHeights findquantileHeight(int id, pclCluster *row,int percentage )
 {
-	vector<float> heights;
+	vector<double> heights, data;
 	PlantHeights temp;
-	int numPoints =0;
 
 	for(int i=0; i<row->cloud->points.size(); i++ )
 	{
@@ -233,68 +228,25 @@ PlantHeights findquantileHeight(int id, pclCluster *row,int percentage )
 	percentage= (int)((percentage*heights.size())/100);
 	sort(heights.begin(),heights.end());
 	
-	float sum=0;
 	for(int i = percentage; i< heights.size(); i++)
 	{
-		sum += heights[i];
-		numPoints ++;
+		data.push_back(heights[i]);
 	}
-	temp.avHeight = sum/(numPoints);
 	
-	sum=0;
-	for(int i = percentage; i< heights.size(); i++ )
+	temp.avHeight= findAverage(data)[0];
+	
+	
+	for(int i=0; i<data.size(); i++ )
 	{
-		sum+= pow(heights[i]-temp.avHeight,2);
+		data[i]=pow(data[i]-temp.avHeight,2);
 	}
-	temp.stdDev= sqrt(sum/numPoints);
+	
+	temp.stdDev= sqrt(findAverage(data)[0]);
 	
 	temp.id= intToString(id);
-	//cout<<temp.id<<", "<<temp.avHeight<<", "<<temp.stdDev<<endl;
 	return temp;
+	
 }
-
-
-
-/*
-	This is where I'm working.... 
-	find a way to subtract the min from the max...
-*/
-PlantHeights findquantileDifference(int id, pclCluster *row,int percentage )
-{
-	vector<float> heights;
-	PlantHeights temp;
-	int numPoints =0;
-
-	for(int i=0; i<row->cloud->points.size(); i++ )
-	{
-		heights.push_back(row->cloud->points[i].z);
-	}
-	percentage= (int)((percentage*heights.size())/100);
-	sort(heights.begin(),heights.end());
-	
-	float sum=0;
-	for(int i = percentage; i< heights.size(); i++)
-	{
-		sum += heights[i];
-		numPoints ++;
-	}
-	temp.avHeight = sum/(numPoints);
-	
-	sum=0;
-	for(int i = percentage; i< heights.size(); i++ )
-	{
-		sum+= pow(heights[i]-temp.avHeight,2);
-	}
-	temp.stdDev= sqrt(sum/numPoints);
-
-	
-	temp.id= intToString(id);
-	//cout<<temp.id<<", "<<temp.avHeight<<", "<<temp.stdDev<<endl;
-	return temp;
-}
-
-
-
 
 /*
 	@Param:
@@ -304,44 +256,44 @@ PlantHeights findquantileDifference(int id, pclCluster *row,int percentage )
 		string to set all other variables
 		
 */
-void utcScanner(string line, int *id, string* dim1, float*high1,float*low1,string* dim2, float*high2,float*low2)
+void utcScanner(string line, int *id, string* dim1, double*high1,double*low1,string* dim2, double*high2,double*low2)
 {
 	string token;
 	istringstream iss(line);
 	
 	getline(iss, token,',');
-	*id = ((int)string2Float(token));
+	*id = ((int)string2double(token));
 	
 	getline(iss, token,',');
 	*dim1 = token;
 	
 	getline(iss, token,',');
-	*high1 = string2Float(token);
+	*high1 = string2double(token);
 	
 	getline(iss, token,',');
-	*low1 = string2Float(token);
+	*low1 = string2double(token);
 	
 	getline(iss, token,',');
 	*dim2 = token;
 	
 	getline(iss, token,',');
-	*high2 = string2Float(token);
+	*high2 = string2double(token);
 	
 	getline(iss, token,',');
-	*low2 = string2Float(token);
+	*low2 = string2double(token);
 }
 
 /*
 	@Param:
 		Number as a string
 	@Returns:
-		Number as a float
+		Number as a double
 	@Prints:
 		null
 */
-float string2Float(string in)
+double string2double(string in)
 {
-	float out=0;
+	double out=0;
 	stringstream ss;
 	ss<<in;
 	ss>>out;
@@ -367,8 +319,30 @@ string intToString(int in)
 }
 
 
+vector<double> findAverage(vector<double> data)
+{
+	vector<double> average;
+	double sum=0, count=0;
+	if(data.size()==0){average.push_back(0); return average;}
+	else if(data.size()==1){return data;}
+	else
+	{
+		for(int i=0; i<data.size(); i++)
+		{
+			if(count==1000)
+			{
+				average.push_back(sum/count);
+				sum=0;
+				count=0;
+			}
+			sum+=data[i];
+			count++;
+		}
+		average.push_back(sum/count);
+		return findAverage(average);
+	}
 
-
+}
 
 
 
