@@ -39,10 +39,10 @@ int main()
 		pclCluster *cluster= new pclCluster();
 		cluster->open(fileName);
 		//making sure that the cloud is at z=0
-		cluster->translateZ(0);
+		//cluster->translateZ(0);
 
 		//croping out ground
-		cluster->crop("z",cropMax,cropMin);
+		//cluster->crop("z",cropMax,cropMin);
 		
 		//puting cloud in vector
 		cloudSum.push_back(*cluster);
