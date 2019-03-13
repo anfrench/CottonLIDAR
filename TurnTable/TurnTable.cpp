@@ -16,6 +16,7 @@ TurnTable::TurnTable()
 	scansPerStep = 1;
 	turnTableStep=0;
 	turnTableAngle =0; 
+	intensity=false;
 }
 
 void TurnTable::setSpatialParams(double distToLidarIn, double heightIn, double scaleIn)
@@ -223,6 +224,7 @@ vector<Point> TurnTable::calculateScan(LMS400Scan *scan)
 		scanPoints.push_back(calculatePoint(distVals[i], angle));
 		if(i<remissVals.size()){
 			scanPoints[i].remission=remissVals[i];
+			intensity=true;
 		}
 		else{scanPoints[i].remission=0;}
 		angle -= stepVal;

@@ -7,7 +7,7 @@
 using namespace std;
 
 void writeToFile(vector<Point> data, string fileName);
-
+bool intensity;
 int main()
 {
 	string fileNameIn, fileNameOut;
@@ -16,7 +16,7 @@ int main()
 	int stepsPerRevIn, scansPerStepIn;
 	vector<Point> scene;
 	TurnTable table;
-	
+	intensity = false;
 	cout<<"Sick LMS 400 Distance Only TurnTable To PCD\n\n";
 	cout<<"Enter Name of file to be decoded.";
 	cin>>fileNameIn;
@@ -44,6 +44,7 @@ int main()
 	table.turnTable();
 	
 	scene = table.getCloud();
+	intensity=table.hasRemissions();
 
 	writeToFile(scene , fileNameOut);
 
@@ -58,10 +59,10 @@ void writeToFile(vector<Point> data, string fileName)
 	outFile.open (fileName.c_str());
 	outFile<<"# .PCD v0.7 - Point Cloud Data file format\n";
 	outFile<<"VERSION 0.7\n";
-	outFile<<"FIELDS x y z\n";
-	outFile<<"SIZE 4 4 4\n";
-	outFile<<"TYPE F F F\n";
-	outFile<<"COUNT 1 1 1\n";
+	outFile<<"FIELDS x y z"; 	if(intensity){outFile<<" intensity";} outFile<<"\n";
+	outFile<<"SIZE 4 4 4"; 		if(intensity){outFile<<" 4";} outFile<<"\n";
+	outFile<<"TYPE F F F"; 		if(intensity){outFile<<" F";} outFile<<"\n";
+	outFile<<"COUNT 1 1 1";		if(intensity){outFile<<" 1";} outFile<<"\n";
 	outFile<<"WIDTH "<<data.size()<<endl;
 	outFile<<"HEIGHT 1\n";
 	outFile<<"VIEWPOINT 0 0 0 1 0 0 0\n";
@@ -74,6 +75,7 @@ void writeToFile(vector<Point> data, string fileName)
 		outFile <<data[i].x<<" ";
 		outFile <<data[i].y<<" ";
 		outFile <<data[i].z<<" ";
+		if(intensity){outFile<<data[i].remission<<" ";}
 		outFile<<endl;
 	}
 			

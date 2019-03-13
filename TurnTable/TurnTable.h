@@ -31,6 +31,7 @@ class TurnTable
 	//Variables
 	double turnTableAngle;
 	int turnTableStep;
+	bool intensity;
 	
 	
 	//product
@@ -78,6 +79,7 @@ class TurnTable
 	int		getScansperStep();
 	void 	setFileName(string nameIN);
 	string 	getFileName();
+	bool 	hasRemissions();
 	
 	//geting Point Cloud
 	vector<Point> getCloud();
