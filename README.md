@@ -119,6 +119,8 @@ Status: IDLE
 * ### Turn Table
   * Takes a file of new line delaminated LMS400 scans and projects them onto a rotating z axis.
   * ![Alt text](Photos/TurnTabledSmoothed.PNG)
+  * Making a Point cloud with Photo scan
+  * ![Alt text](Photos/PhotoScanResult.png)
   
 Status: Active
 
