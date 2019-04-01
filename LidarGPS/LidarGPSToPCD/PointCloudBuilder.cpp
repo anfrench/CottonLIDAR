@@ -36,16 +36,26 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
         {
             Point p;
             p.y=0;
-            p.x= std::cos(angle) * dist;
-            p.z = std::sin(angle) * dist;
+            p.x=std::cos(angle)*dist;
+            p.z=std::sin(angle)*dist;
 
-            p.y= std::sin(pitch) * p.z;//adjusting for pitch
-            p.z = std::cos(pitch) * p.z;
+            p.n_x=(-1)*std::cos(angle);
+            p.n_z=(-1)*std::cos(angle);
 
-            if(p.z>.7) // may also want to remove this if (tests need to be run)
+            p.y=std::sin(pitch)*p.z;//adjusting for pitch
+            p.z=std::cos(pitch)*p.z;
+
+            p.n_y=std::sin(pitch)*p.n_z;
+            p.n_z=std::cos(pitch)*p.n_z;
+
+
+            if(p.z>.7) // may also want to remove this (tests need to be run)
             {
-                p.z *= -1;
-                p.z += mountingHeight;
+                p.z*=-1;
+                p.z+=mountingHeight;
+                
+                p.n_z*=-1;
+
                 workingRow.push_back(p);
             }
         }
@@ -65,8 +75,14 @@ void PointCloudBuilder::rotateRow(double heading)
     {
         Point p = workingRow[i];
         double xyDist=findXYDist(p);
-        p.y=xyDist * sin(heading); 
-        p.x =xyDist * cos(heading);
+        double xyNormDist=findXYNormDist(p);
+        
+        p.y=xyDist*sin(heading); 
+        p.x=xyDist*cos(heading);
+
+        p.n_y=xyNormDist*sin(heading);
+        p.n_x=xyNormDist*cos(heading);
+
         workingRow[i] = p;
     }
 }
@@ -121,6 +137,16 @@ double PointCloudBuilder::findXYDist(Point p)
     return distance;
 }
 
+double PointCloudBuilder::findXYNormDist(Point p)
+{
+    double distance=0;
+
+    distance=(p.n_x*p.n_x) + (p.n_y*p.n_y);
+    distance=std::sqrt(distance);
+
+    return distance;
+}
+
 void PointCloudBuilder::writeFile(std::string fileName)
 {
     cloud.close();
@@ -150,7 +176,7 @@ void PointCloudBuilder::writeFile(std::string fileName)
     for(int i=0; i<numberofPoints; i++)
     {
         getline(points,pointLine);
-        PCDFile<<pointLine;
+        PCDFile<<pointLine<<std::endl;
 
        if(i>flush)
        {

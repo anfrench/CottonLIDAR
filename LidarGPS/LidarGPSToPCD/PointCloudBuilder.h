@@ -10,6 +10,29 @@
 
 class PointCloudBuilder
 {
+  //todo add Normals to points
+  /*
+    Some how Add Normals to the points.
+              Perhaps add I as well?
+
+    Add normals to points as they are being calculated.
+
+        Step1: calculate a normal bassed on lidar angle alone.
+        Step2: Change Normals for pitch.
+        Step3: Change normals due to rotation of cloud for heading. 
+
+    Change print statements.
+        Change point type
+        change fields
+        change length of fields
+        print normals with points.
+    
+    Test solution.
+        Run same config.
+        put in cloud compare.
+        make mesh.
+  */
+ 
   private:
     double mountingHeight;
     double roll, pitch, yaw;
@@ -32,6 +55,7 @@ class PointCloudBuilder
   double toRad(double angle, int steps);
   double toDegree(double angle, int steps);
   double findXYDist(Point p);
+  double findXYNormDist(Point p);
 
   void writeFile(std::string fileName);
   void setShift(Point shiftIN);
