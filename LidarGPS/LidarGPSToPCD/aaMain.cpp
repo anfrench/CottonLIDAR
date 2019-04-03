@@ -30,7 +30,7 @@ int main()
 	LMS400Scan* lidar; // All curent lidar classes are built from this base class
 	int lidarType=0;  //  used to set the lidar pointer
 
-	lidar=new(LMS400Scan);//I don't know why... but it crashes with out this.
+	lidar=new(LMS400Scan);
 
 	try
 	{
@@ -75,7 +75,7 @@ int main()
 		Error(configuration);
 	}
 
-	gps.setOffsetDist(1);  // dont remember what this is for... perhaps add to config
+	gps.setOffsetDist(1);  // mounting offset dist and angle...
 
 	#if PROGRESS
 	int currentScan=0;

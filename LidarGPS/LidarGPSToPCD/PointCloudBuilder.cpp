@@ -70,7 +70,7 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
 void PointCloudBuilder::rotateRow(double heading)
 {
     heading=toRad(heading, 360);
-    heading+=yaw;  // could go over 360... Though shouldn't matter
+    heading+=yaw;  // make sure yaw is in rad 
     for(int i=0; i<workingRow.size(); i++)
     {
         Point p = workingRow[i];
@@ -109,7 +109,7 @@ void PointCloudBuilder::placeRow(double northing, double easting)
 
             cloud << std::fixed << std::showpoint;
             cloud << std::setprecision(6);
-            cloud<<p.x<<" "<<p.y<<" "<<p.z<<std::endl;
+            cloud<<p.x<<" "<<p.y<<" "<<p.z<<" "<<p.n_x<<" "<<p.n_y<<" "<<p.n_z<<std::endl;
         }
 
         numberofPoints++;
@@ -162,10 +162,10 @@ void PointCloudBuilder::writeFile(std::string fileName)
 
     PCDFile<<"# .PCD v.7 - Point Cloud Data file format"<<std::endl;
     PCDFile<<"VERSION .7"<<std::endl;
-    PCDFile<<"FIELDS x y z"<<std::endl;
-    PCDFile<<"SIZE 4 4 4"<<std::endl;
-    PCDFile<<"TYPE F F F"<<std::endl;
-    PCDFile<<"COUNT 1 1 1"<<std::endl;
+    PCDFile<<"FIELDS x y z normal_x normal_y normal_z"<<std::endl;
+    PCDFile<<"SIZE 4 4 4 4 4 4"<<std::endl;
+    PCDFile<<"TYPE F F F F F F"<<std::endl;
+    PCDFile<<"COUNT 1 1 1 1 1 1"<<std::endl;
     PCDFile<<"WIDTH "<<numberofPoints<<std::endl;
     PCDFile<<"HEIGHT 1"<<std::endl;
     PCDFile<<"VIEWPOINT 0 0 0 1 0 0 0"<<std::endl;

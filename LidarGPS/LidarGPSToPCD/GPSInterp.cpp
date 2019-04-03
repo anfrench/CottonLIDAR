@@ -166,6 +166,8 @@ void GPSInterp::setUTM(ModGPS *location,int index, double time)
     duration = endTime - startTime;
     slope = (endLocation-startLocation)/duration;
     increase = slope * (time - startTime);
+    increase=std::abs(increase);
+    if(location->getHeading()>90&&location->getHeading()<180){increase*=-1;}
 
     location->setNorthing(startLocation+increase);
 
@@ -174,6 +176,8 @@ void GPSInterp::setUTM(ModGPS *location,int index, double time)
 
     slope = (endLocation-startLocation)/duration;
     increase = slope * (time - startTime);
+    increase=std::abs(increase);
+    if(location->getHeading()>90&&location->getHeading()<180){increase*=-1;}
 
     location->setEasting(startLocation + increase);
 }
