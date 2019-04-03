@@ -6,6 +6,7 @@ double ModGPS::getHeading(){return heading;}
 double ModGPS::getNorthing(){return northing;}  
 double ModGPS::getEasting(){return easting;} 
 int ModGPS::getUTC(){return utc;} 
+double ModGPS::getAltitude(){return altitude;}
 void ModGPS::setTime(double timeIN){genericTime = timeIN;}
 	
 void ModGPS::setSpeed(double speedIN){speed = speedIN;}
@@ -50,6 +51,7 @@ void ModGPS::readGpsString(string gps)
 	setNorthing(gga.getNorthing());
 	setEasting(gga.getEasting());
 	setUTC(gga.getUTC());
+	setAltitude(gga.getHeight());
 	setTime(time.getTime());
 	
 }
