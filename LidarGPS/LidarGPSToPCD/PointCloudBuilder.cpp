@@ -51,11 +51,6 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
 
             if(p.z>.7) // may also want to remove this (tests need to be run)
             {
-                p.z*=-1;
-                p.z+=mountingHeight;
-                
-                p.n_z*=-1;
-
                 workingRow.push_back(p);
             }
         }
@@ -92,8 +87,7 @@ void PointCloudBuilder::rotateRow(double heading)
 
     Adds gps northing and easting. Decides if point is out of range.
     if not adds shift values, and puts the point in temp file.
-*/
-void PointCloudBuilder::placeRow(double northing, double easting)
+*/ void PointCloudBuilder::placeRow(double northing, double easting)
 {
     while(!workingRow.empty())
     {

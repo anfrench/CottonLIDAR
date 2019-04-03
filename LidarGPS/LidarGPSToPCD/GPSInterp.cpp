@@ -42,6 +42,8 @@ ModGPS GPSInterp::getLocation(double time)
     setUTM(&location, index, time);
     location.setTime(time);
 
+    location.setAltitude(gps[index].getAltitude());
+
     #if debug
     std::cout<<"getLocation::applying offsets "<<endl;
     #endif
