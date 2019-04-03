@@ -68,13 +68,12 @@ Status: IDLE
 
 Status: Active
 
-    All configuration options are now set in a configuration file.
-    Adding more Lidar units that can be used.
-
     Rencent changes:
       A XY shift can now be added to the gps.
       Now have the option to ignore points out of bounds.
       All file names are set in the config file.
+      Normals are now created being created using the lidar angle.
+      Height is now being pulled from gps strings.
 
 * ### LMS Decoders
   * Contains classes to process LMS511, and LMS400.
