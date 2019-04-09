@@ -26,6 +26,7 @@ void ModGPS::setHeading(double headingIN)
 void ModGPS::setNorthing(double northingIN){northing = northingIN;}
 void ModGPS::setEasting(double eastingIN){easting = eastingIN;}
 void ModGPS::setUTC(int utcIN){utc=utcIN;}
+void ModGPS::setAltitude(double altitudeIN){altitude=altitudeIN;}
 
 
 void ModGPS::readGpsString(string gps)

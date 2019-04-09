@@ -50,7 +50,7 @@ class PointCloudBuilder
   PointCloudBuilder();
   void addPoints(std::vector<int> distance, double angle, double stepAngle, double scale);
   void rotateRow(double heading);
-  void placeRow(double northing, double easting);
+  void placeRow(double northing, double easting, double altitude);
 
   double toRad(double angle, int steps);
   double toDegree(double angle, int steps);

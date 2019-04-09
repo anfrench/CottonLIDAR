@@ -6,9 +6,9 @@
 #include "MergeTime.h"
 #include "ConfigReader.h"
 
-#define CATCH 0
+#define CATCH 1
 #define PROGRESS 1
-#define DBUG 0
+#define DBUG 1
 
 #if PROGRESS
 	int countLidarLines(std::string fineName);
@@ -47,6 +47,7 @@ int main()
 		gps.openFile(configuration->getGPSFileName());
 		outFileName=configuration->getOutputFileName();
 		if(!lidarFile.is_open()){throw "Could NOT open Lidar File.";}
+		if(!lidarFile.is_open()){throw "Could NOT open Lidar File.";}
 		
 
 		gps.setOffsetDist(configuration->getMountingXYDist());
@@ -74,6 +75,7 @@ int main()
 		cout<<"Not sure what went Wrong\n";
 		Error(configuration);
 	}
+	cout<<"lkjsaf";
 
 	gps.setOffsetDist(1);  // mounting offset dist and angle...
 
@@ -86,6 +88,7 @@ int main()
 
 	while(getline(lidarFile,line))
 	{
+		cout<<"lkjsaf";
 		try
 		{
 		#if PROGRESS
@@ -104,7 +107,7 @@ int main()
 				cout <<"Found time stamp"<<endl; 
 		#endif
 	
-		ModGPS location;
+		ExtendedGps location;
 		location = gps.getLocation(transmitionTime.getTime());
 		#if DBUG
 				cout <<"Updated/recived GPS"<<endl; 
@@ -117,7 +120,7 @@ int main()
 		#endif
 		builder.addPoints(lidar->getDistValues(),lidar->getStartAngle(), lidar->getAngularStep(), lidar->getScaler());
 		builder.rotateRow(location.getHeading());
-		builder.placeRow(location.getNorthing(), location.getEasting());
+		builder.placeRow(location.getNorthing(), location.getEasting(), 5);
 		#if DBUG
 				cout <<"Processed a line"<<endl<<endl; 
 		#endif

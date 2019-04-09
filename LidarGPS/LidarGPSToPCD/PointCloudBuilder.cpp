@@ -87,7 +87,7 @@ void PointCloudBuilder::rotateRow(double heading)
 
     Adds gps northing and easting. Decides if point is out of range.
     if not adds shift values, and puts the point in temp file.
-*/ void PointCloudBuilder::placeRow(double northing, double easting)
+*/ void PointCloudBuilder::placeRow(double northing, double easting, double altitude)
 {
     while(!workingRow.empty())
     {
@@ -95,6 +95,7 @@ void PointCloudBuilder::rotateRow(double heading)
         workingRow.pop_back();
         p.x+=easting;
         p.y+=northing;
+        p.z=altitude-p.z;
 
         if(noBounds || inBounds(p))
         {

@@ -1,4 +1,5 @@
-#include "ModGPS.h"
+//#include "ModGPS.h" old class
+#include "ExtendedGps.h"
 #include <cmath>
 #include <fstream>
 #include <vector>
@@ -12,7 +13,7 @@
 class GPSInterp
 {
 private:
-std::vector<ModGPS> gps;
+std::vector<ExtendedGps> gps;
 ifstream file;
 
 double offsetDist, offsetAngle;
@@ -25,14 +26,14 @@ protected:
     void advance();
     void adjustIndex(double time);
     double findHeading();
-    void setUTM(ModGPS *location,int index, double time);
-    void applyOffsets(ModGPS *location);
+    void setUTM(ExtendedGps *location,int index, double time);
+    void applyOffsets(ExtendedGps *location);
 public: 
     GPSInterp(std::string fileName);
     GPSInterp();
     void openFile(std::string fileName);
-    ModGPS getLocation(double time);
-    ModGPS currentLocation();
+    ExtendedGps getLocation(double time);
+    ExtendedGps currentLocation();
    void setOffsetDist(double offsetDistIN);
    void setOffsetAngle(double offsetAngleIN);
    

@@ -6,19 +6,20 @@ GPSInterp::GPSInterp()
     offsetAngle=0;
     offsetDist =0;
 }
+
 GPSInterp::GPSInterp(std::string fileName)
 {
     GPSInterp();
     openFile(fileName);
 }
 
-ModGPS GPSInterp::getLocation(double time)
+ExtendedGps GPSInterp::getLocation(double time)
 {
     if(gps.size()<3)
         {return gps[0];}
 
     int index;
-    ModGPS location;
+    ExtendedGps location;
     #if debug
     std::cout<<"getLocation::adjusting time. "<<endl;
     #endif
@@ -42,7 +43,7 @@ ModGPS GPSInterp::getLocation(double time)
     setUTM(&location, index, time);
     location.setTime(time);
 
-    location.setAltitude(gps[index].getAltitude());
+    //location.setAltitude(gps[index].getAltitude()); for mod gps...
 
     #if debug
     std::cout<<"getLocation::applying offsets "<<endl;
@@ -77,8 +78,8 @@ void GPSInterp::openFile(std::string fileName)
     {
         try
         {
-            ModGPS spot;
-            spot.readGpsString(line);
+            ExtendedGps spot;
+            spot.decode(line);
             gps.push_back(spot);
         }
         catch(const char *e)
@@ -122,8 +123,8 @@ void GPSInterp::advance()
             if(file.eof()){file.close();}
             string line;
             getline(file, line);
-            ModGPS spot;
-            spot.readGpsString(line);
+            ExtendedGps spot;
+            spot.decode(line);
             gps.push_back(spot);
             gps.erase(gps.begin());
             failed = false;
@@ -154,7 +155,7 @@ void GPSInterp::adjustIndex(double time)
     
 }
 
-void GPSInterp::setUTM(ModGPS *location,int index, double time)
+void GPSInterp::setUTM(ExtendedGps *location,int index, double time)
 {
     double startLocation, endLocation;
     double startTime, endTime;
@@ -197,7 +198,7 @@ void GPSInterp::setOffsetAngle(double offsetAngleIN)
 int GPSInterp::getSize(){return gps.size();}
 
 
-void GPSInterp::applyOffsets(ModGPS *location)
+void GPSInterp::applyOffsets(ExtendedGps *location)
 {
     double angle, northing, easting;
     
@@ -213,7 +214,7 @@ void GPSInterp::applyOffsets(ModGPS *location)
     location->setEasting(easting);
 }
 
-ModGPS GPSInterp::currentLocation()
+ExtendedGps GPSInterp::currentLocation()
 {
     return gps[(int)(gps.size()/2)];
 }
