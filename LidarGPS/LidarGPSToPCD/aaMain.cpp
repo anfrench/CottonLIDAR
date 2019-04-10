@@ -6,9 +6,9 @@
 #include "MergeTime.h"
 #include "ConfigReader.h"
 
-#define CATCH 1
+#define CATCH 0
 #define PROGRESS 1
-#define DBUG 1
+#define DBUG 0
 
 #if PROGRESS
 	int countLidarLines(std::string fineName);
@@ -75,7 +75,7 @@ int main()
 		cout<<"Not sure what went Wrong\n";
 		Error(configuration);
 	}
-	cout<<"lkjsaf";
+
 
 	gps.setOffsetDist(1);  // mounting offset dist and angle...
 
@@ -88,7 +88,6 @@ int main()
 
 	while(getline(lidarFile,line))
 	{
-		cout<<"lkjsaf";
 		try
 		{
 		#if PROGRESS

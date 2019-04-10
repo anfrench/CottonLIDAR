@@ -53,7 +53,6 @@ void ExtendedGps::decode(std::string exGPSstring)
         {
             tokens.push_back(token);
         }
-        std::cout<<tokens[15]<<"\n";
         setNorthing(stod(tokens[23]));
         setEasting(stod(tokens[22]));
         setHeading(stod(tokens[24]));
@@ -76,7 +75,7 @@ void ExtendedGps::decode(std::string exGPSstring)
 
 double ExtendedGps::fixDegrees(double degreeIN)
 {
-    while(degreeIN>360.0){degreeIN-360.0;}
-    while(degreeIN<0.0){degreeIN+360.0;}
+    while(degreeIN>360.0){degreeIN-=360.0;}
+    while(degreeIN<0.0){degreeIN+=360.0;}
     return degreeIN;
 }

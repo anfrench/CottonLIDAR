@@ -85,7 +85,7 @@ void GPSInterp::openFile(std::string fileName)
         catch(const char *e)
         {
             #if debug
-            cout<<e<<std::endl;
+            cout<<e<<"here"<<std::endl;
             #endif
         }
     }
