@@ -31,6 +31,9 @@ int main()
 	int lidarType=0;  //  used to set the lidar pointer
 
 	lidar=new(LMS400Scan);
+	int currentScan=0;
+	int currentStep=0;
+	int totalScans;
 
 	try
 	{
@@ -40,6 +43,10 @@ int main()
 
 		configuration = new(ConfigReader);
 		configuration->read(ConfigurationFileName);
+
+		#if PROGRESS
+		totalScans=countLidarLines(configuration->getLidarFileName());
+		#endif
 
 		lidarFile.open(configuration->getLidarFileName());
 		lidarType=configuration->getLidarType();
@@ -61,9 +68,10 @@ int main()
 
 		builder.setBounds(configuration->getLowerBounds(),configuration->getUpperBounds());
 		builder.setShift(configuration->getShift());
+		builder.doNormals();
 
 
-		delete(configuration);
+		//delete(configuration);
 	}
 	catch(const char *e)
 	{
@@ -79,12 +87,6 @@ int main()
 
 	gps.setOffsetDist(1);  // mounting offset dist and angle...
 
-	#if PROGRESS
-	int currentScan=0;
-	int currentStep=0;
-	int totalScans=countLidarLines("zrawLidar.txt");
-	#endif
-
 
 	while(getline(lidarFile,line))
 	{
@@ -94,11 +96,13 @@ int main()
 		currentScan ++;
 		if(currentScan>currentStep)
 		{
-			std::cout<<"\tProgress: "<<currentScan/10000
-			<<" of "<<totalScans/10000<<endl;
-			currentStep += 10000;
+			std::cout<<"\tProgress: "<<currentScan/1000
+			<<" of "<<totalScans/1000<<endl;
+			currentStep += 1000;
 		}
 		#endif
+
+		if(line.find("sf")==string::npos){throw "Lidar record corrupted.\n";}
 
 		MergeTime transmitionTime;
 		transmitionTime.setStamp(line);
@@ -117,9 +121,13 @@ int main()
 		#if DBUG
 				cout <<"Decoded Lidar"<<endl; 
 		#endif
+		builder.setRoll(configuration->getRoll()+location.getRoll());
+		builder.setPitch(configuration->getPitch()+location.getPitch());
+		builder.setYaw(configuration->getYaw());
+
 		builder.addPoints(lidar->getDistValues(),lidar->getStartAngle(), lidar->getAngularStep(), lidar->getScaler());
-		builder.rotateRow(location.getHeading());
-		builder.placeRow(location.getNorthing(), location.getEasting(), 5);
+		builder.rotateRow(location.getYaw());
+		builder.placeRow(location.getNorthing(), location.getEasting());
 		#if DBUG
 				cout <<"Processed a line"<<endl<<endl; 
 		#endif

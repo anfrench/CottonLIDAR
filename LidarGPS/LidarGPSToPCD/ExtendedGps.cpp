@@ -32,7 +32,7 @@
     }
     void ExtendedGps::setYaw(double yawIN)
     {
-        pitch=fixDegrees(yawIN);
+        yaw=fixDegrees(yawIN);
     }
     void ExtendedGps::setTime(double timeIN)
     {

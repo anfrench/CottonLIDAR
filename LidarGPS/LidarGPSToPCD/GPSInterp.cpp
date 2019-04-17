@@ -35,8 +35,11 @@ ExtendedGps GPSInterp::getLocation(double time)
     #if debug
     std::cout<<"getLocation::setting heading "<<endl;
     #endif
-    location.setHeading(findHeading());
-
+    location.setHeading(findHeading());//this isn't used right now.
+    location.setYaw(gps[index].getYaw());
+    location.setPitch(gps[index].getPitch());
+    location.setRoll(gps[index].getRoll());
+    
     #if debug
     std::cout<<"getLocation::setting utm "<<endl;
     #endif
@@ -172,7 +175,7 @@ void GPSInterp::setUTM(ExtendedGps *location,int index, double time)
     increase=std::abs(increase);
     if(location->getHeading()>90&&location->getHeading()<180){increase*=-1;}
 
-    location->setNorthing(startLocation+increase);
+    location->setNorthing(startLocation/*+increase*/);
 
     startLocation = gps[index].getEasting();
     endLocation = gps[index+1].getEasting();
@@ -182,7 +185,7 @@ void GPSInterp::setUTM(ExtendedGps *location,int index, double time)
     increase=std::abs(increase);
     if(location->getHeading()>90&&location->getHeading()<180){increase*=-1;}
 
-    location->setEasting(startLocation + increase);
+    location->setEasting(startLocation /*+increase*/);
 }
 
 void GPSInterp::setOffsetDist(double offsetDistIN)

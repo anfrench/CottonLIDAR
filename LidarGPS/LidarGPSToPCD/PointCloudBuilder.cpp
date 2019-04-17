@@ -20,13 +20,13 @@ PointCloudBuilder::PointCloudBuilder()
     boundMin.y=0;
     boundMin.z=0;
 
+    Normals=false;
+
     cloud.open("tempFile.txt");
 }
 
 void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, double stepAngle, double scale)
 {
-    angle = toRad(angle, 360);
-    stepAngle = toRad(stepAngle, 360);
     angle += roll;
     for(int i=0; i<distance.size(); i++)
     {
@@ -36,17 +36,17 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
         {
             Point p;
             p.y=0;
-            p.x=std::cos(angle)*dist;
-            p.z=std::sin(angle)*dist;
+            p.x=std::cos(toRad(angle, 360))*dist;
+            p.z=std::sin(toRad(angle, 360))*dist;
 
-            p.n_x=(-1)*std::cos(angle);
-            p.n_z=(-1)*std::cos(angle);
+            p.n_x=(-1)*std::cos(toRad(angle, 360)); //normals
+            p.n_z=(-1)*std::cos(toRad(angle, 360));
 
-            p.y=std::sin(pitch)*p.z;//adjusting for pitch
-            p.z=std::cos(pitch)*p.z;
+            p.y=std::sin(toRad(pitch, 360))*p.z;//adjusting for pitch
+            p.z=std::cos(toRad(pitch, 360))*p.z;
 
-            p.n_y=std::sin(pitch)*p.n_z;
-            p.n_z=std::cos(pitch)*p.n_z;
+            p.n_y=std::sin(toRad(pitch, 360))*p.n_z;
+            p.n_z=std::cos(toRad(pitch, 360))*p.n_z;
 
 
             if(p.z>.7) // may also want to remove this (tests need to be run)
@@ -64,7 +64,6 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
 */
 void PointCloudBuilder::rotateRow(double heading)
 {
-    heading=toRad(heading, 360);
     heading+=yaw;  // make sure yaw is in rad 
     for(int i=0; i<workingRow.size(); i++)
     {
@@ -72,11 +71,11 @@ void PointCloudBuilder::rotateRow(double heading)
         double xyDist=findXYDist(p);
         double xyNormDist=findXYNormDist(p);
         
-        p.y=xyDist*sin(heading); 
-        p.x=xyDist*cos(heading);
+        p.y=xyDist*sin(toRad(heading, 360)); 
+        p.x=xyDist*cos(toRad(heading, 360));
 
-        p.n_y=xyNormDist*sin(heading);
-        p.n_x=xyNormDist*cos(heading);
+        p.n_y=xyNormDist*sin(toRad(heading, 360));
+        p.n_x=xyNormDist*cos(toRad(heading, 360));
 
         workingRow[i] = p;
     }
@@ -87,7 +86,7 @@ void PointCloudBuilder::rotateRow(double heading)
 
     Adds gps northing and easting. Decides if point is out of range.
     if not adds shift values, and puts the point in temp file.
-*/ void PointCloudBuilder::placeRow(double northing, double easting, double altitude)
+*/ void PointCloudBuilder::placeRow(double northing, double easting)
 {
     while(!workingRow.empty())
     {
@@ -95,7 +94,7 @@ void PointCloudBuilder::rotateRow(double heading)
         workingRow.pop_back();
         p.x+=easting;
         p.y+=northing;
-        p.z=altitude-p.z;
+        p.z=mountingHeight-p.z;
 
         if(noBounds || inBounds(p))
         {
@@ -104,7 +103,12 @@ void PointCloudBuilder::rotateRow(double heading)
 
             cloud << std::fixed << std::showpoint;
             cloud << std::setprecision(6);
-            cloud<<p.x<<" "<<p.y<<" "<<p.z<<" "<<p.n_x<<" "<<p.n_y<<" "<<p.n_z<<std::endl;
+            cloud<<p.x<<" "<<p.y<<" "<<p.z;
+            if(Normals)
+            {
+                cloud<<" "<<p.n_x<<" "<<p.n_y<<" "<<p.n_z;
+            }
+            cloud<<std::endl;
         }
 
         numberofPoints++;
@@ -144,6 +148,12 @@ double PointCloudBuilder::findXYNormDist(Point p)
 
 void PointCloudBuilder::writeFile(std::string fileName)
 {
+    if(Normals){writeFileWithNormals(fileName);}
+    else{writeFileNoNormal(fileName);}
+}
+
+void PointCloudBuilder::writeFileWithNormals(std::string fileName)
+{
     cloud.close();
     std::ifstream points;
     std::ofstream PCDFile;
@@ -161,6 +171,52 @@ void PointCloudBuilder::writeFile(std::string fileName)
     PCDFile<<"SIZE 4 4 4 4 4 4"<<std::endl;
     PCDFile<<"TYPE F F F F F F"<<std::endl;
     PCDFile<<"COUNT 1 1 1 1 1 1"<<std::endl;
+    PCDFile<<"WIDTH "<<numberofPoints<<std::endl;
+    PCDFile<<"HEIGHT 1"<<std::endl;
+    PCDFile<<"VIEWPOINT 0 0 0 1 0 0 0"<<std::endl;
+    PCDFile<<"POINTS "<<numberofPoints<<std::endl;
+    PCDFile<<"DATA ascii"<<std::endl;
+    
+    int flush = 100000;
+    for(int i=0; i<numberofPoints; i++)
+    {
+        getline(points,pointLine);
+        PCDFile<<pointLine<<std::endl;
+
+       if(i>flush)
+       {
+           PCDFile.flush();
+           flush+=100000;
+        #if PROGRESS
+           std::cout<<i/100000<<" of "<<numberofPoints/100000<<std::endl;
+        #endif
+       }
+    }
+
+    points.close();
+    PCDFile.flush();
+    PCDFile.close();
+}
+
+void PointCloudBuilder::writeFileNoNormal(std::string fileName)
+{
+    cloud.close();
+    std::ifstream points;
+    std::ofstream PCDFile;
+    std::string pointLine;
+
+    points.open("tempFile.txt");
+    PCDFile.open(fileName);
+
+    PCDFile << std::fixed << std::showpoint;
+    PCDFile << std::setprecision(6);
+
+    PCDFile<<"# .PCD v.7 - Point Cloud Data file format"<<std::endl;
+    PCDFile<<"VERSION .7"<<std::endl;
+    PCDFile<<"FIELDS x y z"<<std::endl;
+    PCDFile<<"SIZE 4 4 4"<<std::endl;
+    PCDFile<<"TYPE F F F"<<std::endl;
+    PCDFile<<"COUNT 1 1 1"<<std::endl;
     PCDFile<<"WIDTH "<<numberofPoints<<std::endl;
     PCDFile<<"HEIGHT 1"<<std::endl;
     PCDFile<<"VIEWPOINT 0 0 0 1 0 0 0"<<std::endl;
@@ -229,4 +285,9 @@ Point PointCloudBuilder::readPointString(std::string pointString)
 void PointCloudBuilder::setMountingHeight(double heightIn)
 {
     mountingHeight = heightIn;
+}
+
+void PointCloudBuilder::doNormals()
+{
+    Normals=true;
 }
