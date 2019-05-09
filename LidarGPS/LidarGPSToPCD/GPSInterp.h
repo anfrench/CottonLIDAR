@@ -18,6 +18,7 @@ std::vector<ExtendedGps> gps;
 ifstream file;
 
 double offsetDist, offsetAngle;
+double offsetPitch, offsetRoll;
 
 int advanceCounter =0;
 
@@ -29,6 +30,9 @@ protected:
     double findHeading();
     void setUTM(ExtendedGps *location,int index, double time);
     void applyOffsets(ExtendedGps *location);
+
+    void findOffsets(std::string fileName);
+
     void findHeadingOffsets(string fileName);
     void normalizeHeadingOffsets();
     void filterNormalOffsets();
