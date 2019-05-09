@@ -13,6 +13,7 @@
 class GPSInterp
 {
 private:
+std::vector<double> headingOffsets;
 std::vector<ExtendedGps> gps;
 ifstream file;
 
@@ -28,6 +29,11 @@ protected:
     double findHeading();
     void setUTM(ExtendedGps *location,int index, double time);
     void applyOffsets(ExtendedGps *location);
+    void findHeadingOffsets(string fileName);
+    void normalizeHeadingOffsets();
+    void filterNormalOffsets();
+    double findSubsetHeadingOffset(int upper, int lower);
+    void setHeadingOffsets(int upper, int lower, double value);
 public: 
     GPSInterp(std::string fileName);
     GPSInterp();

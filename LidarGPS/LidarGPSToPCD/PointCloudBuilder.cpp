@@ -20,6 +20,10 @@ PointCloudBuilder::PointCloudBuilder()
     boundMin.y=0;
     boundMin.z=0;
 
+    lastLocation.x=0;
+    lastLocation.y=0;
+    lastLocation.z=0;
+
     Normals=false;
 
     cloud.open("tempFile.txt");
@@ -64,7 +68,11 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
 */
 void PointCloudBuilder::rotateRow(double heading)
 {
-    heading+=yaw;  // make sure yaw is in rad 
+    heading+=yaw;  
+
+    if(sin(toRad(heading,360))>0){heading=0;}
+    else{heading=180;}
+
     for(int i=0; i<workingRow.size(); i++)
     {
         Point p = workingRow[i];
@@ -88,13 +96,20 @@ void PointCloudBuilder::rotateRow(double heading)
     if not adds shift values, and puts the point in temp file.
 */ void PointCloudBuilder::placeRow(double northing, double easting)
 {
+    double displacementx, displacementy;
+    displacementx=(easting-lastLocation.x)/workingRow.size();
+    displacementy=(northing-lastLocation.y)/workingRow.size();
     while(!workingRow.empty())
     {
         Point p = workingRow.back();
         workingRow.pop_back();
+
         p.x+=easting;
         p.y+=northing;
         p.z=mountingHeight-p.z;
+
+        easting-=displacementx;
+        northing-=displacementy;
 
         if(noBounds || inBounds(p))
         {
@@ -102,18 +117,19 @@ void PointCloudBuilder::rotateRow(double heading)
             p.y+=shiftValue.y;
 
             cloud << std::fixed << std::showpoint;
-            cloud << std::setprecision(6);
+            cloud << std::setprecision(10);
             cloud<<p.x<<" "<<p.y<<" "<<p.z;
             if(Normals)
             {
                 cloud<<" "<<p.n_x<<" "<<p.n_y<<" "<<p.n_z;
             }
             cloud<<std::endl;
+            numberofPoints++;
         }
-
-        numberofPoints++;
     }
     cloud.flush();
+    lastLocation.x=easting;
+    lastLocation.y=northing;
 }
 
 double PointCloudBuilder::toRad(double angle, int steps)
@@ -196,6 +212,8 @@ void PointCloudBuilder::writeFileWithNormals(std::string fileName)
     points.close();
     PCDFile.flush();
     PCDFile.close();
+
+    remove("tempFile.txt");
 }
 
 void PointCloudBuilder::writeFileNoNormal(std::string fileName)
@@ -242,6 +260,8 @@ void PointCloudBuilder::writeFileNoNormal(std::string fileName)
     points.close();
     PCDFile.flush();
     PCDFile.close();
+
+    remove("tempFile.txt");
 }
 
 void PointCloudBuilder::setShift(Point shiftIN)
@@ -267,7 +287,7 @@ void PointCloudBuilder::setBounds(Point lower, Point upper)
 
 bool PointCloudBuilder::inBounds(Point p)
 {
-    return boundMin.x<p.x && p.x<boundMax.x
+    return     boundMin.x<p.x && p.x<boundMax.x
             && boundMin.y<p.y && p.y<boundMax.y
             && boundMin.z<p.z && p.z<boundMax.z;
 }

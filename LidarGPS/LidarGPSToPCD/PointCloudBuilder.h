@@ -15,7 +15,7 @@ class PointCloudBuilder
     double roll, pitch, yaw;
     bool noBounds;
     int numberofPoints=0;
-    Point shiftValue, boundMax, boundMin;
+    Point shiftValue, boundMax, boundMin, lastLocation;
     std::vector<Point> workingRow;
     std::ofstream cloud;
     bool Normals;

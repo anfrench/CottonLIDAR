@@ -68,7 +68,7 @@ int main()
 
 		builder.setBounds(configuration->getLowerBounds(),configuration->getUpperBounds());
 		builder.setShift(configuration->getShift());
-		builder.doNormals();
+		//builder.doNormals();
 
 
 		//delete(configuration);
@@ -87,7 +87,6 @@ int main()
 
 	gps.setOffsetDist(1);  // mounting offset dist and angle...
 
-
 	while(getline(lidarFile,line))
 	{
 		try
@@ -102,7 +101,7 @@ int main()
 		}
 		#endif
 
-		if(line.find("sf")==string::npos){throw "Lidar record corrupted.\n";}
+		if(line.find("RECEIVE")==string::npos){throw "Lidar record corrupted.\n";}
 
 		MergeTime transmitionTime;
 		transmitionTime.setStamp(line);
@@ -128,6 +127,7 @@ int main()
 		builder.addPoints(lidar->getDistValues(),lidar->getStartAngle(), lidar->getAngularStep(), lidar->getScaler());
 		builder.rotateRow(location.getYaw());
 		builder.placeRow(location.getNorthing(), location.getEasting());
+		
 		#if DBUG
 				cout <<"Processed a line"<<endl<<endl; 
 		#endif
