@@ -46,6 +46,8 @@ public:
     ExtendedGps currentLocation();
    void setOffsetDist(double offsetDistIN);
    void setOffsetAngle(double offsetAngleIN);
+   double getRollOffset();
+   double getPitchOffset();
    
     int getSize();
 };

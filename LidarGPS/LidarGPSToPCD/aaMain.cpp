@@ -34,6 +34,7 @@ int main()
 	int currentScan=0;
 	int currentStep=0;
 	int totalScans;
+	bool done=false;
 
 	try
 	{
@@ -50,28 +51,47 @@ int main()
 
 		lidarFile.open(configuration->getLidarFileName());
 		lidarType=configuration->getLidarType();
+		if(!lidarFile.is_open()){throw "Could NOT open Lidar File.";}
 
 		gps.openFile(configuration->getGPSFileName());
 		outFileName=configuration->getOutputFileName();
-		if(!lidarFile.is_open()){throw "Could NOT open Lidar File.";}
-		if(!lidarFile.is_open()){throw "Could NOT open Lidar File.";}
+
+		cout<<"BEFORE!\n";
+		cout<<"configuration\n";
+		cout<<"Pitch: "<<configuration->getPitch()<<endl;
+		cout<<"Roll: "<<configuration->getRoll()<<endl;
+
+		cout<<"\nGPS\n";
+		cout<<"Pitch: "<<gps.getPitchOffset()<<endl;
+		cout<<"Roll: "<<gps.getRollOffset()<<endl;
+
+		if(!(gps.getPitchOffset()+.5>configuration->getPitch()&&
+			gps.getPitchOffset()-.5<configuration->getPitch()))
+		{
+			configuration->setPitch(configuration->getPitch()+gps.getPitchOffset());
+		}
 		
+		if(!(gps.getRollOffset()+.5>configuration->getRoll()&&
+			gps.getRollOffset()-.5<configuration->getRoll()))
+		{
+			configuration->setRoll(configuration->getRoll()+gps.getRollOffset());
+		}
+
+		cout<<"\n\nAfter!\n";
+		cout<<"Pitch: "<<configuration->getPitch()<<endl;
+		cout<<"Roll: "<<configuration->getRoll()<<endl;
 
 		gps.setOffsetDist(configuration->getMountingXYDist());
 		gps.setOffsetAngle(configuration->getMountingAngle());
-		
 
-		builder.setMountingHeight(configuration->getMountingHeight());
-		builder.setRoll(configuration->getRoll());
-		builder.setPitch(configuration->getPitch());
-		builder.setYaw(configuration->getYaw()); 
+		builder.setMountingHeight(configuration->getMountingHeight()); 
 
 		builder.setBounds(configuration->getLowerBounds(),configuration->getUpperBounds());
 		builder.setShift(configuration->getShift());
+		builder.setMaxPoints(configuration->getExcerptNum());
+		builder.setLeadingPoints(configuration->getLeadingPoints());
 		//builder.doNormals();
 
-
-		//delete(configuration);
 	}
 	catch(const char *e)
 	{
@@ -84,10 +104,7 @@ int main()
 		Error(configuration);
 	}
 
-
-	gps.setOffsetDist(1);  // mounting offset dist and angle...
-
-	while(getline(lidarFile,line))
+	while(getline(lidarFile,line) && !done)
 	{
 		try
 		{
@@ -127,7 +144,7 @@ int main()
 		builder.addPoints(lidar->getDistValues(),lidar->getStartAngle(), lidar->getAngularStep(), lidar->getScaler());
 		builder.rotateRow(location.getYaw());
 		builder.placeRow(location.getNorthing(), location.getEasting());
-		
+		done=builder.isDone();
 		#if DBUG
 				cout <<"Processed a line"<<endl<<endl; 
 		#endif

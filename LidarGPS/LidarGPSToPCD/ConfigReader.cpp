@@ -13,6 +13,10 @@ double ConfigReader::getRoll(){return roll;}
 double ConfigReader::getPitch(){return pitch;}
 double ConfigReader::getYaw(){return yaw;}
 
+void ConfigReader::setRoll(double rollIN){roll=rollIN;}
+void ConfigReader::setPitch(double pitchIN){pitch=pitchIN;}
+void ConfigReader::setYaw(double yawIN){yaw=yawIN;}
+
 Point ConfigReader::getUpperBounds(){return boundMax;}
 Point ConfigReader::getLowerBounds(){return boundMin;}
 Point ConfigReader::getShift(){return shift;}
@@ -21,6 +25,8 @@ double ConfigReader::getMountingAngle(){return mountingAngle;}
 double ConfigReader::getMountingXYDist(){return mountingXYDist;}
 
 int ConfigReader::getLidarType(){return lidarType;}
+int ConfigReader::getExcerptNum(){return excerptNum;}
+int ConfigReader::getLeadingPoints(){return leadingPoints;}
 
 ConfigReader::ConfigReader(){}
 
@@ -69,6 +75,11 @@ void ConfigReader::read(std::string configFileName)
     
     getline(configFile, lidarName);
     setLidarType();
+
+    getline(configFile, skip);
+
+    excerptNum=(int)getValue();
+    leadingPoints=(int)getValue();
 
     configFile.close();
 
@@ -149,7 +160,9 @@ std::string ConfigReader::makeEmptyConfigFile()
     sample+="Lower Bounds Z: 0.0\n\n";
     sample+="Shift X: 0.0\n";
     sample+="Shift Y: 0.0\n\n";
-    sample+="Lidar Unit:(LMS511,LMS4000Distance,LMS4000DistanceAndRemessions)\n\n\n";
+    sample+="Lidar Unit:(LMS511,LMS4000Distance,LMS4000DistanceAndRemessions)\n\n";
+    sample+="Number of Points, 0=ALL POINTS: 0 \n" ;
+    sample+="Number of leading points to skip: 0\n\n\n";
 
     return sample;
 

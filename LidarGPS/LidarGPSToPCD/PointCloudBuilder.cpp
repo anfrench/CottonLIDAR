@@ -4,6 +4,8 @@
 void PointCloudBuilder::setRoll(double rollIN){roll=rollIN;}
 void PointCloudBuilder::setPitch(double pitchIN){pitch=pitchIN;}
 void PointCloudBuilder::setYaw(double yawIN){yaw=yawIN;}
+void PointCloudBuilder::setMaxPoints(int maxPointsIN){maxPoints=maxPointsIN;}
+void PointCloudBuilder::setLeadingPoints(int leadingPointsIN){leadingPoints=leadingPointsIN;}
 
 PointCloudBuilder::PointCloudBuilder()
 {
@@ -31,6 +33,12 @@ PointCloudBuilder::PointCloudBuilder()
 
 void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, double stepAngle, double scale)
 {
+    if(leadingPoints>0)
+    {
+        leadingPoints-=distance.size(); 
+        distance.clear();
+    }
+
     angle += roll;
     for(int i=0; i<distance.size(); i++)
     {
@@ -52,8 +60,7 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
             p.n_y=std::sin(toRad(pitch, 360))*p.n_z;
             p.n_z=std::cos(toRad(pitch, 360))*p.n_z;
 
-
-            if(p.z>.7) // may also want to remove this (tests need to be run)
+            if(p.z>.7)
             {
                 workingRow.push_back(p);
             }
@@ -67,11 +74,12 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
     Makes the row face the heading + yaw
 */
 void PointCloudBuilder::rotateRow(double heading)
-{
-    heading+=yaw;  
+{ 
 
     if(sin(toRad(heading,360))>0){heading=0;}
     else{heading=180;}
+
+    heading+=yaw; 
 
     for(int i=0; i<workingRow.size(); i++)
     {
@@ -96,9 +104,6 @@ void PointCloudBuilder::rotateRow(double heading)
     if not adds shift values, and puts the point in temp file.
 */ void PointCloudBuilder::placeRow(double northing, double easting)
 {
-    double displacementx, displacementy;
-    displacementx=(easting-lastLocation.x)/workingRow.size();
-    displacementy=(northing-lastLocation.y)/workingRow.size();
     while(!workingRow.empty())
     {
         Point p = workingRow.back();
@@ -107,9 +112,6 @@ void PointCloudBuilder::rotateRow(double heading)
         p.x+=easting;
         p.y+=northing;
         p.z=mountingHeight-p.z;
-
-        easting-=displacementx;
-        northing-=displacementy;
 
         if(noBounds || inBounds(p))
         {
@@ -310,4 +312,13 @@ void PointCloudBuilder::setMountingHeight(double heightIn)
 void PointCloudBuilder::doNormals()
 {
     Normals=true;
+}
+
+bool PointCloudBuilder::isDone()
+{
+    if(maxPoints!=0 && numberofPoints>maxPoints)
+    {
+        return true;
+    }
+    return false;
 }

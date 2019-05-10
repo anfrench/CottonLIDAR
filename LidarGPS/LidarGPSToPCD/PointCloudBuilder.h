@@ -11,10 +11,11 @@
 class PointCloudBuilder
 {
   private:
+    int maxPoints=0, leadingPoints=0;
+    int numberofPoints=0;
     double mountingHeight;
     double roll, pitch, yaw;
     bool noBounds;
-    int numberofPoints=0;
     Point shiftValue, boundMax, boundMin, lastLocation;
     std::vector<Point> workingRow;
     std::ofstream cloud;
@@ -48,5 +49,9 @@ class PointCloudBuilder
   void setRoll(double rollIN);
 	void setPitch(double pitchIN);
 	void setYaw(double yawIN);
+  void setMaxPoints(int maxPointsIN);
+  void setLeadingPoints(int leadingPointsIN);
+
+  bool isDone();
 };
 

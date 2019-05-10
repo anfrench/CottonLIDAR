@@ -22,7 +22,7 @@ class ConfigReader
     double mountingAngle;
     double mountingXYDist;
 
-    int lidarType;
+    int lidarType, excerptNum=0, leadingPoints=0;
 
     protected:
     std::string removeAndTrim(std::string str);
@@ -56,6 +56,12 @@ class ConfigReader
     double getMountingXYDist();
 
     int getLidarType();
+    int getExcerptNum();
+    int getLeadingPoints();
+
+    void setRoll(double rollIN);
+    void setPitch(double pitchIN);
+    void setYaw(double yawIN);
 
     std::string makeEmptyConfigFile();
 };

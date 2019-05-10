@@ -10,9 +10,11 @@ GPSInterp::GPSInterp()
 GPSInterp::GPSInterp(std::string fileName)
 {
     GPSInterp();
-    findOffsets(fileName);
     openFile(fileName);
 }
+
+double GPSInterp::getRollOffset(){return offsetRoll;}
+double GPSInterp::getPitchOffset(){return offsetPitch;}
 
 ExtendedGps GPSInterp::getLocation(double time)
 {
@@ -74,6 +76,7 @@ int GPSInterp::findIndex(double time)
 void GPSInterp::openFile(std::string fileName)
 {
     //findHeadingOffsets(fileName);  put on hold for a while...
+    findOffsets(fileName);
     std::string line;
     file.open(fileName);
     if(!file.is_open()){throw "GPS File Could Not Be Opened!";}
@@ -372,12 +375,21 @@ void GPSInterp::findOffsets(string fileName)
         ExtendedGps spot;
         spot.decode(line);
         
-        offsetRoll+=spot.getPitch();
-        offsetPitch+=spot.getPitch();
+        double pitch=spot.getPitch();
+        double roll=spot.getRoll();
+        if(pitch>200){pitch-=360;}
+        if(roll>200){roll-=360;}
+
+        offsetRoll+=pitch;
+        offsetPitch+=roll;
+
         count++;
     }
     offsetRoll/=count;
     offsetPitch/=count;
+
+    offsetRoll*=-1;
+    offsetPitch*=-1;
 
     file.close();
 }
