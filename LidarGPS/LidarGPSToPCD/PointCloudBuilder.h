@@ -31,6 +31,7 @@ class PointCloudBuilder
   void openTempFile();
   void makePoints();
   void rotateRow();
+  void setHeight();
   void checkRow();
 
   void findBestRollOffset(double decPlace);

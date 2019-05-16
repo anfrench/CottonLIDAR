@@ -141,7 +141,6 @@ void PointCloudBuilder::rotateRow()
 
         p.x+=easting;
         p.y+=northing;
-        p.z=mountingHeight-p.z;
 
         if(noBounds || inBounds(p))
         {
@@ -376,12 +375,20 @@ void PointCloudBuilder::openTempFile()
     cloud.open(tempFileName);
 }
 
+void PointCloudBuilder::setHeight()
+{
+    for(int i=0; i<workingRow.size(); i++)
+    {
+        workingRow[i].z=mountingHeight-workingRow[i].z;
+    }
+}
+
 void PointCloudBuilder::process()
 {
     discardCurrent();
     makePoints();
     rotateRow();
-
+    setHeight();
     checkRow();
 }
 
