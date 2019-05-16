@@ -1,6 +1,7 @@
 #include "PointCloudBuilder.h"
 #include <iostream>
 #include <limits>
+#include <ctime>
 #define PROGRESS 1
 
 void PointCloudBuilder::setRoll(double rollIN){roll=rollIN;}
@@ -360,6 +361,7 @@ void PointCloudBuilder::openTempFile()
 {
     std::ifstream test;
     std::string fileNameTest=tempFileName;
+    srand(time(0));
     int count=rand()%5000;
     bool exsist=true;
 
