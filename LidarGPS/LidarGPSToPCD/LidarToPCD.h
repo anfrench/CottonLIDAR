@@ -64,4 +64,6 @@ public:
     void findBestPitchOffset();
     void process();
     void dumpCurrent();
+
+    ~LidarToPCD();
 };

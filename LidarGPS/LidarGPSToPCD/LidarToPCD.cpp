@@ -1,5 +1,7 @@
 #include "LidarToPCD.h"
 
+LidarToPCD::~LidarToPCD(){dumpCurrent();}
+
 #if PROGRESS
 int LidarToPCD::countLidarLines(std::string fileName)
 {
