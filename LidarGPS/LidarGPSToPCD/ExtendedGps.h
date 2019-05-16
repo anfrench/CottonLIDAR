@@ -9,9 +9,9 @@
 class ExtendedGps
 {
     private:
-    double northing, easting, heading;
-    double roll, pitch, yaw;
-    double time;
+    double northing=0, easting=0, heading=0;
+    double roll=0, pitch=0, yaw=0;
+    double time=0;
 
     protected:
     double fixDegrees(double degreeIN);

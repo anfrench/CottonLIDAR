@@ -16,8 +16,8 @@ private:
 std::vector<ExtendedGps> gps;
 ifstream file;
 
-double offsetDist, offsetAngle;
-double offsetPitch, offsetRoll;
+double offsetDist=0, offsetAngle=0;
+double offsetPitch=0, offsetRoll=0;
 
 int advanceCounter =0;
 
@@ -35,6 +35,7 @@ protected:
 public: 
     GPSInterp(std::string fileName);
     GPSInterp();
+    ~GPSInterp();
     void openFile(std::string fileName);
     ExtendedGps getLocation(double time);
     ExtendedGps currentLocation();
@@ -42,6 +43,8 @@ public:
    void setOffsetAngle(double offsetAngleIN);
    double getRollOffset();
    double getPitchOffset();
+
+   void close();
    
     int getSize();
 };

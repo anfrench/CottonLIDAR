@@ -1,10 +1,17 @@
 #include "GPSInterp.h"
 
+void GPSInterp::close(){file.close();}
+
 GPSInterp::GPSInterp()
 {
     PI = atan(1)*4;
     offsetAngle=0;
     offsetDist =0;
+}
+
+GPSInterp::~GPSInterp()
+{
+    if(file.is_open()){file.close();}
 }
 
 GPSInterp::GPSInterp(std::string fileName)
