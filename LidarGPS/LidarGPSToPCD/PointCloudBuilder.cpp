@@ -1,11 +1,43 @@
 #include "PointCloudBuilder.h"
 #include <iostream>
+#include <limits>
+#define PROGRESS 1
 
 void PointCloudBuilder::setRoll(double rollIN){roll=rollIN;}
 void PointCloudBuilder::setPitch(double pitchIN){pitch=pitchIN;}
 void PointCloudBuilder::setYaw(double yawIN){yaw=yawIN;}
 void PointCloudBuilder::setMaxPoints(int maxPointsIN){maxPoints=maxPointsIN;}
 void PointCloudBuilder::setLeadingPoints(int leadingPointsIN){leadingPoints=leadingPointsIN;}
+Point PointCloudBuilder::getMaxValues(){return maxVal;}
+Point PointCloudBuilder::getMinValues(){return minVal;}
+void PointCloudBuilder::setAngularStep(double stepAngleIN){stepAngle=stepAngleIN;}
+void PointCloudBuilder::setScale(double scaleIN){scale=scaleIN;}
+
+void PointCloudBuilder::setDistValues(std::vector<int> vectorIn)
+{
+    if(!distances.empty())
+    {
+        distances.clear();
+    }
+
+    if(leadingPoints>0)
+    {
+        leadingPoints-=vectorIn.size(); 
+    }
+    else
+    {
+        for(int i=0; i<vectorIn.size(); i++)
+        {
+            distances.push_back(vectorIn[i]);
+        }
+    }
+}
+
+PointCloudBuilder::~PointCloudBuilder()
+{
+    if(cloud.is_open()){cloud.close();}
+    remove(tempFileName.c_str());
+}
 
 PointCloudBuilder::PointCloudBuilder()
 {
@@ -22,27 +54,26 @@ PointCloudBuilder::PointCloudBuilder()
     boundMin.y=0;
     boundMin.z=0;
 
-    lastLocation.x=0;
-    lastLocation.y=0;
-    lastLocation.z=0;
+    maxVal.x= std::numeric_limits<double>::min();
+    maxVal.y=std::numeric_limits<double>::min();
+    maxVal.z=std::numeric_limits<double>::min();
+
+    minVal.x=std::numeric_limits<double>::max();
+    minVal.y=std::numeric_limits<double>::max();
+    minVal.z=std::numeric_limits<double>::max();
 
     Normals=false;
 
-    cloud.open("tempFile.txt");
+    openTempFile();
 }
 
-void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, double stepAngle, double scale)
+void PointCloudBuilder::makePoints()
 {
-    if(leadingPoints>0)
-    {
-        leadingPoints-=distance.size(); 
-        distance.clear();
-    }
 
-    angle += roll;
-    for(int i=0; i<distance.size(); i++)
+    double angle=roll;
+    for(int i=0; i<distances.size(); i++)
     {
-        double dist = ((double)distance[i]) /(1000*scale);
+        double dist = ((double)distances[i]) /(1000*scale);
         
         if(dist>0.4 && dist<80) // with updates to code I may want to remove this if
         {
@@ -73,13 +104,12 @@ void PointCloudBuilder::addPoints(std::vector<int> distance, double angle, doubl
 /*
     Makes the row face the heading + yaw
 */
-void PointCloudBuilder::rotateRow(double heading)
+void PointCloudBuilder::rotateRow()
 { 
 
+    double heading=yaw;
     if(sin(toRad(heading,360))>0){heading=0;}
     else{heading=180;}
-
-    heading+=yaw; 
 
     for(int i=0; i<workingRow.size(); i++)
     {
@@ -130,8 +160,6 @@ void PointCloudBuilder::rotateRow(double heading)
         }
     }
     cloud.flush();
-    lastLocation.x=easting;
-    lastLocation.y=northing;
 }
 
 double PointCloudBuilder::toRad(double angle, int steps)
@@ -177,7 +205,7 @@ void PointCloudBuilder::writeFileWithNormals(std::string fileName)
     std::ofstream PCDFile;
     std::string pointLine;
 
-    points.open("tempFile.txt");
+    points.open(tempFileName.c_str());
     PCDFile.open(fileName);
 
     PCDFile << std::fixed << std::showpoint;
@@ -215,7 +243,7 @@ void PointCloudBuilder::writeFileWithNormals(std::string fileName)
     PCDFile.flush();
     PCDFile.close();
 
-    remove("tempFile.txt");
+    remove(tempFileName.c_str());
 }
 
 void PointCloudBuilder::writeFileNoNormal(std::string fileName)
@@ -225,7 +253,7 @@ void PointCloudBuilder::writeFileNoNormal(std::string fileName)
     std::ofstream PCDFile;
     std::string pointLine;
 
-    points.open("tempFile.txt");
+    points.open(tempFileName.c_str());
     PCDFile.open(fileName);
 
     PCDFile << std::fixed << std::showpoint;
@@ -262,8 +290,6 @@ void PointCloudBuilder::writeFileNoNormal(std::string fileName)
     points.close();
     PCDFile.flush();
     PCDFile.close();
-
-    remove("tempFile.txt");
 }
 
 void PointCloudBuilder::setShift(Point shiftIN)
@@ -289,6 +315,14 @@ void PointCloudBuilder::setBounds(Point lower, Point upper)
 
 bool PointCloudBuilder::inBounds(Point p)
 {
+    if(p.x>maxVal.x){maxVal.x=p.x;}
+    if(p.y>maxVal.y){maxVal.y=p.y;}
+    if(p.z>maxVal.z){maxVal.z=p.z;}
+
+    if(p.x<minVal.x){minVal.x=p.x;}
+    if(p.y<minVal.y){minVal.y=p.y;}
+    if(p.z<minVal.z){minVal.z=p.z;}
+
     return     boundMin.x<p.x && p.x<boundMax.x
             && boundMin.y<p.y && p.y<boundMax.y
             && boundMin.z<p.z && p.z<boundMax.z;
@@ -321,4 +355,90 @@ bool PointCloudBuilder::isDone()
         return true;
     }
     return false;
+}
+
+void PointCloudBuilder::openTempFile()
+{
+    std::ifstream test;
+    std::string fileNameTest=tempFileName;
+    int count=rand()%5000;
+    bool exsist=true;
+
+    while(exsist)
+    {
+        count++;
+        fileNameTest=std::to_string(count)+tempFileName;
+        test.open(fileNameTest.c_str());
+        exsist=test.is_open();
+        test.close();
+    }
+    tempFileName=fileNameTest;
+    cloud.open(tempFileName);
+}
+
+void PointCloudBuilder::process()
+{
+    discardCurrent();
+    makePoints();
+    rotateRow();
+
+    checkRow();
+}
+
+void PointCloudBuilder::findBestRoll()
+{
+    roll= (double)(int)roll;
+    for(double decPlace=1.0; decPlace>=.001; decPlace/=10)
+    {
+        findBestRollOffset(decPlace);
+    }
+}
+
+void PointCloudBuilder::findBestRollOffset(double decPlace)
+{
+    double minimumDisparity=1000, bestFitRoll=roll;
+    double minAngle=roll-10*decPlace;
+    double maxAngle=roll+10*decPlace;
+
+    for(roll=minAngle; roll<=maxAngle; roll+=decPlace)
+    {
+        process();
+        double disparity= rowMaxVal.z-rowMinVal.z;
+        if(disparity<minimumDisparity)
+        {
+            minimumDisparity=disparity;
+            bestFitRoll=roll;
+        }
+    }
+    roll=bestFitRoll;
+}
+
+void PointCloudBuilder::discardCurrent()
+{
+    if(!workingRow.empty()){workingRow.clear();}
+
+    rowMaxVal.x= std::numeric_limits<double>::min();
+    rowMaxVal.y=std::numeric_limits<double>::min();
+    rowMaxVal.z=std::numeric_limits<double>::min();
+
+    rowMinVal.x=std::numeric_limits<double>::max();
+    rowMinVal.y=std::numeric_limits<double>::max();
+    rowMinVal.z=std::numeric_limits<double>::max();
+
+}
+
+void PointCloudBuilder::checkRow()
+{
+    for(int i=0; i<workingRow.size(); i++)
+    {
+        Point p=workingRow[i];
+
+        if(p.x>rowMaxVal.x){rowMaxVal.x=p.x;}
+        if(p.y>rowMaxVal.y){rowMaxVal.y=p.y;}
+        if(p.z>rowMaxVal.z){rowMaxVal.z=p.z;}
+
+        if(p.x<rowMinVal.x){rowMinVal.x=p.x;}
+        if(p.y<rowMinVal.y){rowMinVal.y=p.y;}
+        if(p.z<rowMinVal.z){rowMinVal.z=p.z;}
+    }
 }
